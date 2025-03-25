@@ -1,41 +1,83 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import React, { useEffect } from "react";
+import { Stack, router } from "expo-router";
+
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { SafeAreaView } from "react-native";
+import * as Linking from "expo-linking";
+import AuthProvider, { useAuth }  from "@/components/providers/auth.provider";
+import { useStorageState } from "@/components/providers/useStorageState";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+let defaultTheme: "dark" | "light" = "light";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+Linking.getInitialURL().then((url: any) => {
+  let { queryParams } = Linking.parse(url) as any;
+  defaultTheme = queryParams?.iframeMode ?? defaultTheme;
+});
+
+type ThemeContextType = {
+  colorMode?: "dark" | "light";
+  toggleColorMode?: () => void;
+};
+export const ThemeContext = React.createContext<ThemeContextType>({
+  colorMode: "light",
+  toggleColorMode: () => {},
+});
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [colorMode, setColorMode] = React.useState<"dark" | "light">(
+    defaultTheme
+  );
+
+  const toggleColorMode = async () => {
+    setColorMode((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+  // const { token } = useAuth(); 
+  const [[loading, token], setToken] = useStorageState('token');
+  
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    console.log("effect inside layout");
+    console.log("token", token);
+    
+    
+    if (!token) {
+      console.log("Token not found, redirecting to login...");
+      // router.push("/login");
     }
-  }, [loaded]);
+  }, [token]); // Esegui l'effetto quando il token cambia
 
-  if (!loaded) {
-    return null;
-  }
 
   return (
-    <GluestackUIProvider mode="light"><ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider></GluestackUIProvider>
+    <>
+      <AuthProvider>
+        <SafeAreaView
+          className={`${
+            colorMode === "light" ? "bg-[#E5E5E5]" : "bg-[#262626]"
+          }`}
+        />
+        <ThemeContext.Provider value={{ colorMode, toggleColorMode }}>
+          <GluestackUIProvider mode={colorMode}>
+            <SafeAreaView
+              className={`${
+                colorMode === "light" ? "bg-white" : "bg-[#171717]"
+              } flex-1 overflow-hidden`}
+            >
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen name="loginPage" />
+                <Stack.Screen name="not-found" />
+              </Stack>
+            </SafeAreaView>
+          </GluestackUIProvider>
+        </ThemeContext.Provider>
+      </AuthProvider>
+    </>
   );
 }
