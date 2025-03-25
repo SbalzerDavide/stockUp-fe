@@ -44,7 +44,7 @@ export default function RootLayout() {
     
     if (!token) {
       console.log("Token not found, redirecting to login...");
-      // router.push("/login");
+      router.push("/login");
     }
   }, [token]); // Esegui l'effetto quando il token cambia
 
