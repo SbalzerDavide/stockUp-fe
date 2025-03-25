@@ -4,7 +4,7 @@ import { Text } from "@/components/ui/text";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Image } from "@/components/ui/image";
 import { User, Eye, EyeClosed } from "lucide-react-native";
 import React from "react";
@@ -15,31 +15,29 @@ const loginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const auth = useAuth();
+
+  // Effettua il reindirizzamento se l'utente ha già un token
+  useEffect(() => {
+    if (auth.token) {
+      // Se l'utente ha già un token, reindirizza alla home o explore
+      router.replace('/explore');
+    }
+  }, [auth.token]);
 
   const headerImage = require("../assets/images/login.png");
 
-  // const session  = useSession();
-
   const handleLogin = async () => {
-    console.log("call session login");
+    setLoading(true);
     auth.login(email, password);
-
-    // login(email, password);
   };
+  
   const [showPassword, setShowPassword] = useState(false);
 
   const handleState = () => {
     setShowPassword((showState) => {
       return !showState;
     });
-  };
-  const auth = useAuth();
-
-  const login = (email: string, password: string) => {
-    console.log("login");
-    console.log(email);
-    console.log(password);
-    auth.login(email, password);
   };
 
   return (
@@ -75,8 +73,8 @@ const loginPage = () => {
             </Input>
           </Box>
           <Box className="flex flex-col gap-2">
-            <Button action="primary" onPress={handleLogin}>
-              Login
+            <Button action="primary" onPress={handleLogin} disabled={loading}>
+              {loading ? "Caricamento..." : "Login"}
             </Button>
             {/* <Button action="secondary">
               Register
