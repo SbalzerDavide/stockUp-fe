@@ -1,45 +1,85 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import React from "react";
+import { Tabs } from "expo-router";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import "@/global.css";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import * as Linking from "expo-linking";
+import { Icon } from "@/components/ui/icon";
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+import {
+  Plus,
+  Home,
+  MessageCircle,
+  User,
+  SlidersHorizontal,
+} from "lucide-react-native";
+
+let defaultTheme: "dark" | "light" = "light";
+
+Linking.getInitialURL().then((url: any) => {
+  let { queryParams } = Linking.parse(url) as any;
+  defaultTheme = queryParams?.iframeMode ?? defaultTheme;
+});
+
+type ThemeContextType = {
+  colorMode?: "dark" | "light";
+  toggleColorMode?: () => void;
+};
+export const ThemeContext = React.createContext<ThemeContextType>({
+  colorMode: "light",
+  toggleColorMode: () => {},
+});
+
+export default function TabsLayout() {
+  const [colorMode, setColorMode] = React.useState<"dark" | "light">(
+    defaultTheme
+  );
+
+  const toggleColorMode = async () => {
+    setColorMode((prev) => (prev === "light" ? "dark" : "light"));
+  };
+  const [activeTab, setActiveTab] = React.useState("Home");
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+    <>
+      {/* top SafeAreaView */}
+      <GluestackUIProvider mode={colorMode}>
+        <Tabs
+          screenOptions={{
+            tabBarActiveTintColor: "#e91e63",
+            // headerStyle: { height: 50 }, // Adjust header height
+            // headerTitleStyle: { color: colorMode === "light" ? "#000" : "#fff" }, // Ensure header text is visible
+          }}
+        >
+          <Tabs.Screen
+            name="index"
+            options={{
+              headerTitle: "My homepage",
+              // prevent the back button from showing
+              headerLeft: () => <></>,
+            }}
+          />
+          <Tabs.Screen
+            name="home"
+            options={{
+              headerTitle: "My homepage",
+              tabBarIcon: ({ color }) => (
+                <Icon as={Home} size={"sm"} color={color} />
+              ),
+            }}
+          />
+          <Tabs.Screen
+            name="about"
+            options={{
+              headerTitle: "My about screen",
+              tabBarIcon: ({ color }) => (
+                <Icon as={User} size={"sm"} color={color} />
+              ),
+              // presentation: "modal",
+            }}
+          />
+        </Tabs>
+      </GluestackUIProvider>
+    </>
   );
 }
