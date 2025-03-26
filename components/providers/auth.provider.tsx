@@ -1,11 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { loginRequest, fetchUser, setAuthToken } from "@/features/auth/api/auth-api-client";
-import axios from 'axios';
+import {
+  loginRequest,
+  fetchUser,
+  setAuthToken,
+} from "@/features/auth/api/auth-api-client";
+import axios from "axios";
 
 import { router } from "expo-router";
 import { useStorageState } from "./useStorageState";
-import { useLogin } from "@/features/auth/api/auth-mutations";
-
 
 type User = {
   id: number;
@@ -56,7 +58,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Funzione per recuperare i dati dell'utente
   const fetchUserData = async (): Promise<void> => {
     if (!token) return;
-    
+
     setIsLoading(true);
     try {
       const userData = await fetchUser(token);
@@ -73,7 +75,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: unknown) {
       console.error("Errore nel recupero dati utente:", error);
       // Se c'è un errore di autenticazione, fare logout
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (
+        (axios.isAxiosError(error) && (error.response?.status === 401 ||
+        error.response?.status === 403)
+      )
+      ) {
         logout();
       }
     } finally {
@@ -82,12 +88,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const login = async (username: string, password: string) => {
-    console.log("login provider");
-    
     setIsLoading(true);
     try {
       let response = await loginRequest(username, password);
       setToken(response.token);
+
       const user = {
         email: response.email,
         id: response.id,
@@ -95,12 +100,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         last_name: response.last_name,
       };
       setUser(user);
-      setSession(response.token);
-      
+
       // Salva i dati utente nel localStorage
       localStorage.setItem("user", JSON.stringify(user));
-      
-      router.push('/explore');
+
+      router.push("/home");
     } catch (error) {
       console.error("Errore durante il login:", error);
       throw error;
@@ -111,22 +115,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     setUser(null);
-    setToken("");
-    setSession(null);
+    setToken(null);
     localStorage.removeItem("user");
     setAuthToken(null);
-    router.replace('/login');
+    router.replace("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      token, 
-      login, 
-      logout, 
-      isLoading,
-      fetchUserData 
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        login,
+        logout,
+        isLoading,
+        fetchUserData,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

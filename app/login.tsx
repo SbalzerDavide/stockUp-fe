@@ -21,7 +21,7 @@ const loginPage = () => {
   useEffect(() => {
     if (auth.token) {
       // Se l'utente ha già un token, reindirizza alla home o explore
-      router.replace('/explore');
+      router.replace('/home');
     }
   }, [auth.token]);
 
