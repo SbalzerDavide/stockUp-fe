@@ -10,38 +10,28 @@ import {
 } from "lucide-react-native";
 
 import React from "react";
-
-const bottomTabs = [
-  {
-    icon: Home,
-    label: "Home",
-  },
-  {
-    icon: SlidersHorizontal,
-    label: "Filter",
-  },
-  {
-    icon: Plus,
-    label: "Listing",
-  },
-  {
-    icon: MessageCircle,
-    label: "Inbox",
-    disabled: true,
-  },
-  {
-    icon: User,
-    label: "Profile",
-  },
-];
+import {
+  useInvalidateItems,
+  useItems,
+} from "@/features/items/api/items.mutations";
 
 const Homepage = () => {
+  const { data: items, isLoading, error } = useItems();
+
+  // Hook per invalidare la cache (utile dopo operazioni di modifica)
+  const invalidateItems = useInvalidateItems();
+
   const [activeTab, setActiveTab] = React.useState("Home");
 
   return (
     <>
       <Box className="flex-1 justify-center items-center">
         <Text className="text-typography-900 text-2xl">Homepage</Text>
+        {/* <ul>
+          {items.map((item: any) => (
+            <Text key={item.id}>{item.name}</Text>
+          ))}
+        </ul> */}
       </Box>
     </>
   );
