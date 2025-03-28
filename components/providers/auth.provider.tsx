@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import {
   loginRequest,
   fetchUser,
-  setAuthToken,
+  // setAuthToken,
 } from "@/features/auth/api/auth-api-client";
 import axios from "axios";
 
@@ -47,7 +47,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Inizializza il token nelle headers quando l'app si avvia
   useEffect(() => {
     if (token) {
-      setAuthToken(token);
+      // setAuthToken(token);
       // Se abbiamo un token ma non abbiamo i dati utente, recuperali
       if (!user) {
         fetchUserData();
@@ -61,7 +61,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     setIsLoading(true);
     try {
-      const userData = await fetchUser(token);
+      const userData = await fetchUser();
       if (userData) {
         setUser({
           id: userData.id,
@@ -91,7 +91,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
     try {
       let response = await loginRequest(username, password);
-      setToken(response.token);
+      setToken(response.token);    
 
       const user = {
         email: response.email,
@@ -117,7 +117,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("user");
-    setAuthToken(null);
+    // setAuthToken(null);
     router.replace("/login");
   };
 
