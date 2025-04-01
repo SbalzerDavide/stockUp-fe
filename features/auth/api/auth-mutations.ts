@@ -1,55 +1,39 @@
-// import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-// import { fetchUser, loginRequest } from './auth-api-client';
-// import { useStorageState } from '@/components/providers/useStorageState';
-// import { useCallback } from 'react';
-// import { router } from 'expo-router';
+// import { useMutation, useQueryClient } from '@tanstack/react-query';
+// import { login } from './auth-api-client';
+// import * as SecureStore from 'expo-secure-store';
 
-// // Definiamo il tipo per le props del login
-// interface LoginProps {
-//   email: string;
-//   password: string;
-// }
+// export const AUTH_QUERY_KEY = ['auth'] as const;
 
-// // Hook per gestire il login e memorizzare il token
 // export function useLogin() {
 //   const queryClient = useQueryClient();
-//   const [, setToken] = useStorageState("token");
-//   const [, setSession] = useStorageState("session");
-  
+
 //   return useMutation({
-//     mutationFn: (props: LoginProps) => 
-//       loginRequest(props.email, props.password),
-//     onSuccess: (data) => {
-//       console.log("Login riuscito:", data);
+//     mutationFn: async (credentials: { email: string; password: string }) => {
+//       const response = await login(credentials);
       
-//       // Salva i dati utente nel localStorage
-//       if (typeof localStorage !== 'undefined') {
-//         const userData = {
-//           id: data.id,
-//           email: data.email,
-//           first_name: data.first_name,
-//           last_name: data.last_name,
-//         };
-//         localStorage.setItem("user", JSON.stringify(userData));
+//       // Salva il token nel SecureStore
+//       if (response.token) {
+//         await SecureStore.setItemAsync('jwt_token', response.token);
 //       }
       
-//       // Invalida e aggiorna i dati utente
-//       queryClient.invalidateQueries({ queryKey: ['user'] });
-      
-//       // Reindirizza all'esplorazione
-//       router.push('/explore');
+//       return response;
 //     },
-//     onError: (error) => {
-//       console.error("Errore di login:", error);
+//     onSuccess: (data) => {
+//       queryClient.setQueryData(AUTH_QUERY_KEY, data);
 //     },
 //   });
 // }
 
-// // export function useUser(token: string | null, options = {}) {
-// //   return useQuery({
-// //     queryKey: ['user', token],
-// //     queryFn: () => fetchUser(token || undefined),
-// //     enabled: !!token, // Esegui la query solo se è presente un token
-// //     ...options,
-// //   });
-// // }
+// export function useLogout() {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: async () => {
+//       // Rimuovi il token dal SecureStore
+//       await SecureStore.deleteItemAsync('jwt_token');
+//     },
+//     onSuccess: () => {
+//       queryClient.setQueryData(AUTH_QUERY_KEY, null);
+//     },
+//   });
+// }
