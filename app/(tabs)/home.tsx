@@ -1,19 +1,12 @@
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import { Box } from "@/components/ui/box";
-
-import {
-  Plus,
-  Home,
-  MessageCircle,
-  User,
-  SlidersHorizontal,
-} from "lucide-react-native";
 
 import React from "react";
 import {
   useInvalidateItems,
   useItems,
 } from "@/features/items/api/items.mutations";
+import { useAuth } from "@/components/providers/auth.provider";
 
 const Homepage = () => {
   const { data: items, isLoading, error } = useItems();
@@ -21,17 +14,21 @@ const Homepage = () => {
   // Hook per invalidare la cache (utile dopo operazioni di modifica)
   const invalidateItems = useInvalidateItems();
 
-  const [activeTab, setActiveTab] = React.useState("Home");
+  const { logout } = useAuth();
+
 
   return (
     <>
       <Box className="flex-1 justify-center items-center">
         <Text className="text-typography-900 text-2xl">Homepage</Text>
-        {/* <ul>
-          {items.map((item: any) => (
-            <Text key={item.id}>{item.name}</Text>
+        <ul>
+          {items?.map((item: any) => (
+            <li key={item.id}>
+              <Text key={item.id}>{item.name}</Text>
+            </li>
           ))}
-        </ul> */}
+        </ul>
+        <Text className="text-typography-900 text-2xl" onPress={() => logout()}>Logout</Text>
       </Box>
     </>
   );
