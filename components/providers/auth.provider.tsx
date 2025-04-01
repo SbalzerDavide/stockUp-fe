@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import {
   loginRequest,
   fetchUser,
-  // setAuthToken,
 } from "@/features/auth/api/auth-api-client";
 import axios from "axios";
 
@@ -41,21 +40,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(storedInfo?.email);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [[tokenLoading, token], setToken] = useStorageState("token");
+  const [[tokenLoading, token], setToken] = useStorageState("jwt_token");
   const [[sessionLoading, session], setSession] = useStorageState("session");
 
-  // Inizializza il token nelle headers quando l'app si avvia
   useEffect(() => {
     if (token) {
-      // setAuthToken(token);
-      // Se abbiamo un token ma non abbiamo i dati utente, recuperali
-      if (!user) {
-        fetchUserData();
-      }
+      fetchUserData();
     }
   }, [token]);
 
-  // Funzione per recuperare i dati dell'utente
   const fetchUserData = async (): Promise<void> => {
     if (!token) return;
 
@@ -69,12 +62,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           first_name: userData.first_name,
           last_name: userData.last_name,
         });
-        // Salva i dati utente nel localStorage
         localStorage.setItem("user", JSON.stringify(userData));
       }
     } catch (error: unknown) {
-      console.error("Errore nel recupero dati utente:", error);
-      // Se c'è un errore di autenticazione, fare logout
+      console.error("error in fetchUserData:", error);
       if (
         (axios.isAxiosError(error) && (error.response?.status === 401 ||
         error.response?.status === 403)
@@ -101,7 +92,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       };
       setUser(user);
 
-      // Salva i dati utente nel localStorage
       localStorage.setItem("user", JSON.stringify(user));
 
       router.push("/home");
@@ -117,7 +107,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("user");
-    // setAuthToken(null);
     router.replace("/login");
   };
 

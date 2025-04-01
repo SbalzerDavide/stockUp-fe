@@ -7,7 +7,6 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { SafeAreaView } from "react-native";
 import * as Linking from "expo-linking";
 import AuthProvider, { useAuth }  from "@/components/providers/auth.provider";
-import { useStorageState } from "@/components/providers/useStorageState";
 
 // Crea una nuova istanza di QueryClient
 const queryClient = new QueryClient();
