@@ -1,0 +1,31 @@
+{
+  "common": {
+    "buttons": {
+      "newItem": "New Item",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "labels": {
+      "name": "Name",
+      "description": "Description",
+      "enterName": "Enter a name",
+      "enterDescription": "Enter a description"
+    }
+  },
+  "toasts": {
+    "success": {
+      "title": "Success",
+      "itemCreated": "Item created successfully! yeaaa"
+    },
+    "error": {
+      "title": "Error",
+      "createFailed": "Failed to create item. Please try again."
+    }
+  },
+  "pages": {
+    "newItem": {
+      "title": "Add new item"
+    }
+  }
+} 

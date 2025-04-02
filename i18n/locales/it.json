@@ -1,0 +1,31 @@
+{
+  "common": {
+    "buttons": {
+      "newItem": "Nuovo Elemento",
+      "save": "Salva",
+      "cancel": "Annulla",
+      "delete": "Elimina"
+    },
+    "labels": {
+      "name": "Nome",
+      "description": "Descrizione",
+      "enterName": "Inserisci un nome",
+      "enterDescription": "Inserisci una descrizione"
+    }
+  },
+  "toasts": {
+    "success": {
+      "title": "Successo",
+      "itemCreated": "Elemento creato con successo!"
+    },
+    "error": {
+      "title": "Errore",
+      "createFailed": "Impossibile creare l'elemento. Riprova."
+    }
+  },
+  "pages": {
+    "newItem": {
+      "title": "Aggiungi nuovo elemento"
+    }
+  }
+} 
