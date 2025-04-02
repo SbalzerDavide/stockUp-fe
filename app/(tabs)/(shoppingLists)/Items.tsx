@@ -1,4 +1,4 @@
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet } from "react-native";
 
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -7,8 +7,11 @@ import { ItemCard } from "@/components/ItemCard";
 
 import React from "react";
 import { useItems } from "@/features/items/api/items.mutations";
-export default function ElementsScreen() {
-  const { data: items, isLoading, error } = useItems();
+export default function ItemsScreen() {
+  const { data: items, isLoading, error } = useItems({
+    search: "",
+    // is_edible: false,
+  });
 
   return (
     <>
@@ -23,7 +26,7 @@ export default function ElementsScreen() {
           />
         }
       >
-        {items?.map((item: any) => (
+        {items?.results?.map((item: any) => (
           <ItemCard
             key={item.id}
             title={item.name}

@@ -6,13 +6,7 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import * as Linking from "expo-linking";
 import { Icon } from "@/components/ui/icon";
 
-import {
-  Plus,
-  Home,
-  MessageCircle,
-  User,
-  SlidersHorizontal,
-} from "lucide-react-native";
+import { Home, User, ShoppingCart } from "lucide-react-native";
 
 let defaultTheme: "dark" | "light" = "light";
 
@@ -51,6 +45,17 @@ export default function TabsLayout() {
             // headerTitleStyle: { color: colorMode === "light" ? "#000" : "#fff" }, // Ensure header text is visible
           }}
         >
+          <Tabs.Screen
+            name="(shoppingLists)"
+            options={{
+              headerShown: false,
+              tabBarLabel: "Shopping Lists",
+              tabBarIcon: ({ color }) => (
+                <Icon as={ShoppingCart} size={"sm"} color={color} />
+              ),
+            }}
+          />
+
           <Tabs.Screen
             name="index"
             options={{
