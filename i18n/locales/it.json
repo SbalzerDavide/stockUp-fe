@@ -10,7 +10,8 @@
       "name": "Nome",
       "description": "Descrizione",
       "enterName": "Inserisci un nome",
-      "enterDescription": "Inserisci una descrizione"
+      "enterDescription": "Inserisci una descrizione",
+      "searchText": "Cerca"
     }
   },
   "toasts": {
