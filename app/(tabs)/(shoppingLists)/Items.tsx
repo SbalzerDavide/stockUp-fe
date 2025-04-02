@@ -1,21 +1,79 @@
-import { StyleSheet } from "react-native";
-
+import { ScrollView, StyleSheet } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ItemCard } from "@/components/ItemCard";
+import { Switch } from "@/components/ui/switch";
+import colors from "tailwindcss/colors";
 
 import React from "react";
 import { useItems } from "@/features/items/api/items.mutations";
+import { VStack } from "@/components/ui/vstack";
+import { Box } from "@/components/ui/box";
+import { useState } from "react";
+import { t } from "i18next";
+import { debounce } from "lodash";
+import { Stack } from "expo-router";
+import { ListFilter, Icon } from "lucide-react-native";
 export default function ItemsScreen() {
-  const { data: items, isLoading, error } = useItems({
-    search: "",
-    // is_edible: false,
+  const [isEdible, setIsEdible] = useState(false);
+  const [debouncedSearchText, setDebouncedSearchText] = useState("");
+
+  const {
+    data: items,
+    isLoading,
+    error,
+  } = useItems({
+    search: debouncedSearchText,
+    is_edible: isEdible,
   });
+
+  const debouncedSearch = debounce((text: string) => {
+    setDebouncedSearchText(text);
+  }, 300);
 
   return (
     <>
-      <ParallaxScrollView
+      <Stack.Screen
+        options={{
+          headerBackVisible: true,
+          headerSearchBarOptions: {
+            placeholder: t("common.labels.searchText"),
+            onChangeText: (text) => {
+              debouncedSearch(text.nativeEvent.text);
+            },
+          },
+        }}
+      />
+      <ScrollView>
+        <Box className="w-full flex flex-row justify-between p-4 bg-slate-200">
+          <Switch
+            size="md"
+            isDisabled={false}
+            trackColor={{
+              false: colors.neutral[300],
+              true: colors.neutral[600],
+            }}
+            thumbColor={colors.neutral[50]}
+            ios_backgroundColor={colors.neutral[300]}
+            onValueChange={(val) => {
+              setIsEdible(val);
+            }}
+          />
+          <ListFilter size={24} />
+        </Box>
+
+        <VStack className="gap-4 p-4" reversed={false}>
+          {items?.results?.map((item: any) => (
+            <ItemCard
+              key={item.id}
+              title={item.name}
+              description={item.description}
+              imageUrl="https://via.placeholder.com/50"
+            />
+          ))}
+        </VStack>
+      </ScrollView>
+      {/* <ParallaxScrollView
         headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
         headerImage={
           <IconSymbol
@@ -34,7 +92,7 @@ export default function ItemsScreen() {
             imageUrl="https://via.placeholder.com/50"
           />
         ))}
-      </ParallaxScrollView>
+      </ParallaxScrollView> */}
     </>
   );
 }
