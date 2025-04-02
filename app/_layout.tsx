@@ -1,15 +1,22 @@
 import React, { useEffect } from "react";
 import { Stack, router } from "expo-router";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { SafeAreaView } from "react-native";
 import * as Linking from "expo-linking";
 import AuthProvider, { useAuth }  from "@/components/providers/auth.provider";
+import '@/i18n/config'; // Importa la configurazione i18n
 
-// Crea una nuova istanza di QueryClient
-const queryClient = new QueryClient();
+// Create a new QueryClient instance
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 let defaultTheme: "dark" | "light" = "light";
 
