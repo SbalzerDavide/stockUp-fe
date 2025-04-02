@@ -2,7 +2,7 @@ import { router, Stack } from "expo-router";
 import { SafeAreaView, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
 import { Box } from "@/components/ui/box";
 import { useState, useEffect } from "react";
 import { Image } from "@/components/ui/image";
@@ -21,7 +21,7 @@ const loginPage = () => {
   useEffect(() => {
     if (auth.token) {
       // Se l'utente ha già un token, reindirizza alla home o explore
-      router.replace('/home');
+      router.replace("/home");
     }
   }, [auth.token]);
 
@@ -31,7 +31,7 @@ const loginPage = () => {
     setLoading(true);
     auth.login(email, password);
   };
-  
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleState = () => {
@@ -74,11 +74,8 @@ const loginPage = () => {
           </Box>
           <Box className="flex flex-col gap-2">
             <Button action="primary" onPress={handleLogin} disabled={loading}>
-              {loading ? "Caricamento..." : "Login"}
+              <ButtonText>{loading ? "Caricamento..." : "Login"}</ButtonText>
             </Button>
-            {/* <Button action="secondary">
-              Register
-            </Button> */}
           </Box>
         </View>
       </SafeAreaView>{" "}

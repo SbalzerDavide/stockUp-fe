@@ -3,7 +3,6 @@ import {
   loginRequest,
   fetchUser,
 } from "@/features/auth/api/auth-api-client";
-import axios from "axios";
 
 import { router } from "expo-router";
 import { useStorageState } from "./useStorageState";
@@ -34,14 +33,15 @@ const AuthContext = createContext<ProviderProps>({
 });
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const storedInfo = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user") || "{}")
+  const [[tokenLoading, token], setToken] = useStorageState("jwt_token");
+  // const [[sessionUser, user], setUser] = useStorageState("user");
+  const [[storedInfoLoading, storedInfoString], setStoredInfo] = useStorageState("storedInfo");
+  const storedInfo = storedInfoString
+    ? JSON.parse(storedInfoString || "{}")
     : null;
   const [user, setUser] = useState<User | null>(storedInfo?.email);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [[tokenLoading, token], setToken] = useStorageState("jwt_token");
-  const [[sessionLoading, session], setSession] = useStorageState("session");
 
   useEffect(() => {
     if (token) {
@@ -62,17 +62,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           first_name: userData.first_name,
           last_name: userData.last_name,
         });
-        localStorage.setItem("user", JSON.stringify(userData));
+        setStoredInfo(JSON.stringify(userData));
+        // localStorage.setItem("user", JSON.stringify(userData));
       }
     } catch (error: unknown) {
       console.error("error in fetchUserData:", error);
-      if (
-        (axios.isAxiosError(error) && (error.response?.status === 401 ||
-        error.response?.status === 403)
-      )
-      ) {
-        logout();
-      }
+      logout();
     } finally {
       setIsLoading(false);
     }
@@ -92,7 +87,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       };
       setUser(user);
 
-      localStorage.setItem("user", JSON.stringify(user));
+      setStoredInfo(JSON.stringify(user));
 
       router.push("/home");
     } catch (error) {
@@ -104,9 +99,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
+    console.log("logout");
     setUser(null);
     setToken(null);
-    localStorage.removeItem("user");
+    setStoredInfo(null);
+    // localStorage.removeItem("user");
     router.replace("/login");
   };
 
