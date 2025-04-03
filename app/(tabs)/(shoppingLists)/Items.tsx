@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import colors from "tailwindcss/colors";
 
 import React from "react";
-import { useItems } from "@/features/items/api/items.mutations";
+import { useItems } from "@/features/items/api/shoppingList.mutations";
 import { VStack } from "@/components/ui/vstack";
 import { Box } from "@/components/ui/box";
 import { useState } from "react";

@@ -6,7 +6,10 @@ import React from "react";
 export default function Index() {
   return (
     <>
-      <Stack.Screen options={{ headerTitle: "Oops!" }} />
+      <Stack.Screen
+        name="shoppingLists"
+        options={{ title: "Oops!" }}
+      />
 
       <View
         style={{
