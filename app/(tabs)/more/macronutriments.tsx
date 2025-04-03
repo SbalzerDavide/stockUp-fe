@@ -23,13 +23,9 @@ export default function MacronutrimentsScreen() {
           <ThemedView className="flex flex-col gap-2">
             {macronutriments &&
               Object.values(macronutriments).map(
-                (macronutriment: {
-                  id: string;
-                  name: string;
-                  description: string;
-                }) => (
+                (macronutriment) => (
                   <BaseCard
-                    key={macronutriment.id}
+                    key={macronutriment.id.toString()}
                     title={macronutriment.name}
                     description={macronutriment.description}
                   />

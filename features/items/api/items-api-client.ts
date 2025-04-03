@@ -1,6 +1,6 @@
 import { api } from '@/core/api-client';
 import { createItemRequest, Item, ItemsQueryParams } from '@/models/items.model';
-import { Macronutriments } from '@/models/macronutriments.model';
+import { ItemMacronutriments, ItemCategory } from '@/models/items.model';
 
 export const getItems = async (params: ItemsQueryParams): Promise<{
   count: number,
@@ -18,7 +18,7 @@ export const getItems = async (params: ItemsQueryParams): Promise<{
   }
 };
 
-export const getMacronutriments = async (): Promise<Macronutriments> => {
+export const getItemMacronutriments = async (): Promise<ItemMacronutriments[]> => {
   try {
     const response = await api.get('/item-macronutriments/');
     return response.data;
@@ -30,8 +30,17 @@ export const getMacronutriments = async (): Promise<Macronutriments> => {
   }
 };
 
-
-
+export const getItemCategories = async (): Promise<ItemCategory[]> => {
+  try {
+    const response = await api.get('/item-categories/');
+    return response.data;
+  } catch (error) {
+    console.error('Errore in getItemCategories:', {
+      error,
+    });
+    throw error;
+  }
+};
 export const createItem = async (item: createItemRequest): Promise<Item> => {
   try {
     const response = await api.post('/items/', item);

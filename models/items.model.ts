@@ -1,5 +1,4 @@
 import { Category } from "./categories.model";
-import { Macronutriments } from "./macronutriments.model";
 
 export interface Item {
   id: number;
@@ -8,7 +7,7 @@ export interface Item {
   category?: Category;
   department?: string;
   is_edible: boolean;
-  macronutriments: Macronutriments;
+  macronutriments: ItemMacronutriments;
   consumation_average_days?: number;
   price?: number;
   created_at: string;
@@ -30,5 +29,21 @@ export interface ItemsQueryParams {
   macronutriments?: string;
   consumation_average_days?: number;
   price?: number;  
+}
+
+export interface ItemMacronutriments {
+  id: number;
+  name: string;
+  description?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ItemCategory {
+  id: number;
+  name: string;
+  description?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
