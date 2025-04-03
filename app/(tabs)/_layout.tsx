@@ -6,7 +6,7 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import * as Linking from "expo-linking";
 import { Icon } from "@/components/ui/icon";
 
-import { Home, User, ShoppingCart } from "lucide-react-native";
+import { Home, User, ShoppingCart, EllipsisVertical, AlignEndVertical } from "lucide-react-native";
 
 let defaultTheme: "dark" | "light" = "light";
 
@@ -57,14 +57,6 @@ export default function TabsLayout() {
           />
 
           <Tabs.Screen
-            name="index"
-            options={{
-              headerTitle: "My homepage",
-              // prevent the back button from showing
-              headerLeft: () => <></>,
-            }}
-          />
-          <Tabs.Screen
             name="home"
             options={{
               headerTitle: "My homepage",
@@ -74,11 +66,22 @@ export default function TabsLayout() {
             }}
           />
           <Tabs.Screen
-            name="about"
+            name="explore"
             options={{
-              headerTitle: "My about screen",
+              headerTitle: "Explore screen",
               tabBarIcon: ({ color }) => (
-                <Icon as={User} size={"sm"} color={color} />
+                <Icon as={AlignEndVertical} size={"sm"} color={color} />
+              ),
+              // presentation: "modal",
+            }}
+          />
+
+          <Tabs.Screen
+            name="more"
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ color }) => (
+                <Icon as={EllipsisVertical} size={"sm"} color={color} />
               ),
               // presentation: "modal",
             }}

@@ -5,7 +5,7 @@ import React from "react";
 import {
   useInvalidateItems,
   useItems,
-} from "@/features/items/api/items.mutations";
+} from "@/features/items/api/shoppingList.mutations";
 import { useAuth } from "@/components/providers/auth.provider";
 
 const Homepage = () => {
