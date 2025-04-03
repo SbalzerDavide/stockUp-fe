@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createItem, getItems } from './items-api-client';
+import { createItem, getItems, getMacronutriments } from './items-api-client';
 import { createItemRequest, ItemsQueryParams } from '@/models/items.model';
 import { useShowToast } from '@/hooks/useShowToast';
 
@@ -35,6 +35,17 @@ export function useCreateItem() {
     },
   });
 }
+
+export function useMacronutriments() {
+  return useQuery({
+    queryKey: [...ITEMS_QUERY_KEY],
+    queryFn: () => getMacronutriments(),
+    // Opzioni aggiuntive della query
+    staleTime: 5 * 60 * 1000, // Considera i dati "freschi" per 5 minuti
+    gcTime: 30 * 60 * 1000, // Mantieni i dati in cache per 30 minuti
+  });
+}
+
 
 
 // Hook per invalidare la cache degli items
