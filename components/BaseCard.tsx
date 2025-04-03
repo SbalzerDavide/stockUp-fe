@@ -4,7 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 
 interface CardProps {
   title: string;
-  description: string;
+  description?: string;
   imageUrl?: string;
 }
 
