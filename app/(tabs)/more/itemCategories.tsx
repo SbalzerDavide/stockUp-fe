@@ -3,7 +3,7 @@ import { ScrollView} from "react-native";
 
 import React from "react";
 import { ThemedView } from "@/components/ThemedView";
-import { useItemCategories } from "@/features/items/api/shoppingList.mutations";
+import { useItemCategories } from "@/features/shoppingList/api/shoppingList.mutations";
 import { BaseCard } from "@/components/BaseCard";
 import { Heading } from "@/components/ui/heading";
 

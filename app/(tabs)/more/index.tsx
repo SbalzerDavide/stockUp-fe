@@ -27,11 +27,11 @@ export default function Index() {
       elements: [
         {
           title: "Shopping Lists",
-          link: "/(tabs)/(shoppingLists)",
+          link: "/(tabs)/shoppingLists",
         },
         {
           title: "Items",
-          link: "/(tabs)/(shoppingLists)/Items",
+          link: "/(tabs)/shoppingLists/Items",
         },
       ],
     },
