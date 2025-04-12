@@ -1,10 +1,8 @@
-import { Category } from "./categories.model";
-
 export interface Item {
   id: number;
   name: string;
   description?: string;
-  category?: Category;
+  category?: ItemCategory;
   department?: string;
   is_edible: boolean;
   macronutriments: ItemMacronutriments;
