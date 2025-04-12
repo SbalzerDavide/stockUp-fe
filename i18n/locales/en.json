@@ -12,7 +12,15 @@
       "enterName": "Enter a name",
       "enterDescription": "Enter a description",
       "searchText": "Search"
-    }
+    },
+    "is_edible": {
+      "label": "Edibility",
+      "yes": "Edibile",
+      "no": "Not edibile"
+    },
+    "macronutriments": "Macronutriments",
+    "categories": "Categories"
+
   },
   "toasts": {
     "success": {
