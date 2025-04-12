@@ -1,7 +1,7 @@
 import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
 
-import { useCreateItem } from "@/features/items/api/shoppingList.mutations";
+import { useCreateItem } from "@/features/shoppingList/api/shoppingList.mutations";
 import { Box } from "@/components/ui/box";
 import { useState } from "react";
 import { View } from "react-native";
