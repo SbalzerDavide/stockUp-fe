@@ -46,7 +46,7 @@ export default function TabsLayout() {
           }}
         >
           <Tabs.Screen
-            name="(shoppingLists)"
+            name="shoppingLists"
             options={{
               headerShown: false,
               tabBarLabel: "Shopping Lists",
