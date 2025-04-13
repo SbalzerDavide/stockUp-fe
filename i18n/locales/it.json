@@ -2,6 +2,7 @@
   "common": {
     "buttons": {
       "newItem": "Nuovo Elemento",
+      "newShoppingList": "Nuova Lista di Shopping",
       "save": "Salva",
       "cancel": "Annulla",
       "delete": "Elimina"
@@ -34,6 +35,9 @@
   "pages": {
     "newItem": {
       "title": "Aggiungi nuovo elemento"
+    },
+    "newShoppingList": {
+      "title": "Nuova lista di shopping"
     }
   }
 } 

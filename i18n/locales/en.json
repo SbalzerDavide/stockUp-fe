@@ -2,6 +2,7 @@
   "common": {
     "buttons": {
       "newItem": "New Item",
+      "newShoppingList": "New Shopping List",
       "save": "Save",
       "cancel": "Cancel",
       "delete": "Delete"
@@ -35,6 +36,9 @@
   "pages": {
     "newItem": {
       "title": "Add new item"
+    },
+    "newShoppingList": {
+      "title": "Add new shopping list"
     }
   }
 } 
