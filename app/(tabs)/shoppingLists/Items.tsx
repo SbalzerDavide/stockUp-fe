@@ -163,6 +163,7 @@ export default function ItemsScreen() {
             <Box className="flex flex-row gap-2 ml-4">
               {filters?.map((filter, index) => (
                 <Pressable
+                  key={filter.id}
                   onPress={openFilter(filter, index)}
                   className="bg-secondary-300 rounded-lg"
                 >
@@ -209,7 +210,7 @@ export default function ItemsScreen() {
             )}
           </Box>
           {activeFilter?.options?.map((filter: any) => (
-            <ActionsheetItem className="px-5" onPress={applyFilter(filter)}>
+            <ActionsheetItem key={filter.value} className="px-5" onPress={applyFilter(filter)}>
               <ActionsheetItemText
                 className={
                   activeFilter?.value == filter.id ? "text-primary-600" : ""
