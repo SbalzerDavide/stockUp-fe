@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createItem, getItems, getItemMacronutriments, getItemCategories, getShoppingLists } from './shoppingList-api-client';
+import { createItem, getItems, getItemMacronutriments, getItemCategories, getShoppingLists, createShoppingList } from './shoppingList-api-client';
 import { createItemRequest, ItemsQueryParams } from '@/models/items.model';
 import { useShowToast } from '@/hooks/useShowToast';
+import { createShoppingListRequest } from '@/models/shoppingList.model';
 
 // Chiave per la query degli items
 export const ITEMS_QUERY_KEY = ['items'] as const;
@@ -42,6 +43,27 @@ export function useCreateItem() {
     },
   });
 }
+
+export function useCreateShoppingList() {
+  const showToast = useShowToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (shoppingList: createShoppingListRequest) => createShoppingList(shoppingList),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shoppingLists'] });
+    },
+    onError: (error) => {
+      showToast({
+        titleKey: "toasts.error.title",
+        descriptionKey: "toasts.error.createFailed",
+        action: "error"
+      });
+    },
+  });
+}
+
+
 
 export function useMacronutriments() {
   return useQuery({

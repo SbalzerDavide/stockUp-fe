@@ -6,7 +6,7 @@ import {
 } from "@/models/items.model";
 import { ItemMacronutriments, ItemCategory } from "@/models/items.model";
 
-import { ShoppingList } from "@/models/shoppingList.model";
+import { createShoppingListRequest, ShoppingList } from "@/models/shoppingList.model";
 
 // shoppingList
 export const getShoppingLists = async (): Promise<{
@@ -71,12 +71,25 @@ export const getItemCategories = async (): Promise<ItemCategory[]> => {
     throw error;
   }
 };
+
 export const createItem = async (item: createItemRequest): Promise<Item> => {
   try {
     const response = await api.post("/items/", item);
     return response.data;
   } catch (error) {
     console.error("Errore in createItem:", {
+      error,
+    });
+    throw error;
+  }
+};
+
+export const createShoppingList = async (shoppingList: createShoppingListRequest): Promise<ShoppingList> => {
+  try {
+    const response = await api.post("/shopping-lists/", shoppingList);
+    return response.data;
+  } catch (error) {
+    console.error("Errore in createShoppingList:", {
       error,
     });
     throw error;
