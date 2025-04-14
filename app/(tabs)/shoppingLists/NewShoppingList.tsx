@@ -54,7 +54,7 @@ export default function NewShoppingListScreen() {
   return (
     <>
       <Stack.Screen
-        name="NewItem"
+        name="NewShoppingList"
         options={{
           headerShown: false,
         }}
