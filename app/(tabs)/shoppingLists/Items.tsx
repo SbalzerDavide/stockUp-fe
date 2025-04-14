@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ItemCard } from "@/components/ItemCard";
+import { ItemCard } from "@/features/shoppingList/components/ItemCard";
 import { Switch } from "@/components/ui/switch";
 import colors from "tailwindcss/colors";
 import { Text } from "@/components/ui/text";
@@ -28,6 +28,7 @@ import {
   ActionsheetItem,
   ActionsheetItemText,
 } from "@/components/ui/actionsheet";
+import { ThemedView } from "@/components/ThemedView";
 
 interface Filter {
   id: string;
@@ -143,9 +144,10 @@ export default function ItemsScreen() {
           // },
         }}
       />
-      <ScrollView>
-        <Box className="w-full flex flex-row justify-between py-4 bg-neutral-50">
-          {/* <Switch
+      <ThemedView className="flex-col gap-4 h-full p-4">
+        <ScrollView>
+          {/* <Box className="w-full flex flex-row justify-between py-4 bg-neutral-50"> */}
+            {/* <Switch
             size="md"
             isDisabled={false}
             value={isEdible}
@@ -159,42 +161,47 @@ export default function ItemsScreen() {
               setIsEdible(val);
             }}
           /> */}
-          <ScrollView horizontal={true}>
-            <Box className="flex flex-row gap-2 ml-4">
-              {filters?.map((filter, index) => (
-                <Pressable
-                  key={filter.id}
-                  onPress={openFilter(filter, index)}
-                  className="bg-secondary-300 rounded-lg"
-                >
-                  {filter.value != null ? (
-                    <Text className="bg-primary-400 p-2 rounded-lg">
-                      {
-                        filter.options?.find((el) => el.id === filter.value)
-                          ?.name
-                      }
-                    </Text>
-                  ) : (
-                    <Text className="p-2 rounded-lg">{filter.name}</Text>
-                  )}
-                </Pressable>
-              ))}
-            </Box>
-          </ScrollView>
-          {/* <ListFilter size={24} /> */}
-        </Box>
+            <ThemedView className="w-full flex flex-row justify-between py-4">
+              <ScrollView horizontal={true}>
+                <Box className="flex flex-row gap-2 ml-4">
+                {filters?.map((filter, index) => (
+                  <Pressable
+                    key={filter.id}
+                    onPress={openFilter(filter, index)}
+                    className="bg-background-900 rounded-lg"
+                  >
+                    {filter.value != null ? (
+                      <Text className="bg-primary-400 p-2 rounded-lg">
+                        {
+                          filter.options?.find((el) => el.id === filter.value)
+                            ?.name
+                        }
+                      </Text>
+                    ) : (
+                      <Text className="p-2 rounded-lg">{filter.name}</Text>
+                    )}
+                  </Pressable>
+                ))}
+                </Box>
+              </ScrollView>
+            </ThemedView>
+            {/* <ListFilter size={24} /> */}
+          {/* </Box> */}
 
-        <VStack className="gap-4 p-4" reversed={false}>
-          {items?.results?.map((item: any) => (
-            <ItemCard
-              key={item.id}
-              title={item.name}
-              description={item.description}
-              imageUrl="https://via.placeholder.com/50"
-            />
-          ))}
-        </VStack>
-      </ScrollView>
+          <VStack className="gap-4 p-4" reversed={false}>
+            {items?.results?.map((item) => (
+              <ItemCard
+                key={item.id}
+                title={item.name}
+                description={item.description}
+                macronutrients={item.macronutriments.name}
+                category={item.category?.name}
+                department={item.department}
+              />
+            ))}
+          </VStack>
+        </ScrollView>
+      </ThemedView>
       <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
         <ActionsheetBackdrop />
         <ActionsheetContent className="overflow-hidden p-0">
@@ -210,7 +217,11 @@ export default function ItemsScreen() {
             )}
           </Box>
           {activeFilter?.options?.map((filter: any) => (
-            <ActionsheetItem key={filter.value} className="px-5" onPress={applyFilter(filter)}>
+            <ActionsheetItem
+              key={filter.value}
+              className="px-5"
+              onPress={applyFilter(filter)}
+            >
               <ActionsheetItemText
                 className={
                   activeFilter?.value == filter.id ? "text-primary-600" : ""
