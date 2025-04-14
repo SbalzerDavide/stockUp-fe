@@ -6,6 +6,7 @@ export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+  align?: 'left' | 'right' | 'center';
 };
 
 export function ThemedText({
@@ -13,6 +14,7 @@ export function ThemedText({
   lightColor,
   darkColor,
   type = 'default',
+  align = 'left',
   ...rest
 }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
@@ -27,6 +29,8 @@ export function ThemedText({
         type === 'subtitle' ? styles.subtitle : undefined,
         type === 'link' ? styles.link : undefined,
         style,
+        align === 'left' ? styles.alignLeft : undefined,
+        align === 'right' ? styles.alignRight : undefined,
       ]}
       {...rest}
     />
@@ -57,4 +61,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#0a7ea4',
   },
+  alignLeft: {
+    textAlign: 'left',
+  },
+  alignRight: {
+    textAlign: 'right',
+  },
+  
 });
