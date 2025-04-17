@@ -40,7 +40,9 @@ export default function Index() {
             {shoppingLists?.results &&
               Object.values(shoppingLists.results).map((shoppingList) => (
                 <ShoppingListCard
+                  onSelect={() => router.push(`/(tabs)/shoppingLists/detail/${shoppingList.id}`)}
                   key={shoppingList.id.toString()}
+                  id={shoppingList.id.toString()}
                   title={shoppingList.name}
                   description={shoppingList.description}
                   created_at={shoppingList.created_at}
