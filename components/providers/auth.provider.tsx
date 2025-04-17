@@ -6,16 +6,10 @@ import {
 
 import { router } from "expo-router";
 import { useStorageState } from "./useStorageState";
-
-type User = {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-} | null;
+import { User } from "@/models/auth.model";
 
 interface ProviderProps {
-  user: User;
+  user: User | null;
   token: string | null;
   login(username: string, password: string): void;
   logout(): void;
