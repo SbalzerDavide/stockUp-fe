@@ -194,9 +194,9 @@ export default function ItemsScreen() {
                 key={item.id}
                 title={item.name}
                 description={item.description}
-                macronutrients={item.macronutriments.name}
-                category={item.category?.name}
-                department={item.department}
+                macronutrients={item.macronutriments?.name || ''}
+                category={item.category?.name || ''}
+                department={item.department || ''}
               />
             ))}
           </VStack>
