@@ -5,9 +5,10 @@ import { ThemedText } from "@/components/ThemedText";
 interface CardProps {
   title: string;
   description?: string;
-  macronutrients: string;
+  macronutrients?: string;
   category?: string;
   department?: string;
+  quantity?: number;
 }
 
 function truncateString(str: string, maxLength: number = 24): string {
@@ -23,6 +24,7 @@ export function ItemCard({
   macronutrients,
   category,
   department,
+  quantity,
 }: CardProps) {
   return (
     <Box className="bg-background-900 rounded-lg p-3 shadow-md">
