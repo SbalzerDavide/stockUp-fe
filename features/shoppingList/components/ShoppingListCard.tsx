@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { useDateFormatter } from "@/hooks/useDateFormatter";
@@ -14,6 +14,8 @@ interface CardProps {
   created_at: string;
   is_active: boolean;
   is_purchased: boolean;
+  id: string;
+  onSelect: (id: string) => void;
 }
 
 export function ShoppingListCard({
@@ -21,12 +23,18 @@ export function ShoppingListCard({
   description,
   created_at,
   is_active,
+  id,
   is_purchased,
+  onSelect
 }: CardProps) {
   const { formatDate, formatDateOnly } = useDateFormatter();
 
+  const handlePress = () => {
+    onSelect(id);
+  };
+
   return (
-    <ThemedView className="rounded-lg !bg-background-900 p-4 shadow-md">
+    <Pressable onPress={handlePress} className="rounded-lg !bg-background-900 p-4 shadow-md">
       <ThemedView className="flex-row !bg-background-900 gap-2 w-full">
         <Box className="flex-row h-full justify-between items-center">
           <ThemedText className="text-sm">
@@ -47,7 +55,7 @@ export function ShoppingListCard({
           )}
         </Box>
       </ThemedView>
-    </ThemedView>
+    </Pressable>
   );
 }
 
