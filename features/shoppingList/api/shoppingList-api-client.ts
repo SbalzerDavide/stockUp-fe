@@ -6,7 +6,7 @@ import {
 } from "@/models/items.model";
 import { ItemMacronutriments, ItemCategory } from "@/models/items.model";
 
-import { createShoppingListRequest, ShoppingList } from "@/models/shoppingList.model";
+import { createShoppingListRequest, ShoppingList, ShoppingListDetail } from "@/models/shoppingList.model";
 
 // shoppingList
 export const getShoppingLists = async (): Promise<{
@@ -24,6 +24,18 @@ export const getShoppingLists = async (): Promise<{
     });
     throw error;
   }  
+};
+
+export const getShoppingListItems  = async (id: string): Promise<ShoppingListDetail> => {
+  try {
+    const response = await api.get(`/shopping-lists/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Errore in getShoppingListItems:", {
+      error,
+    });
+    throw error;
+  }
 };
 
 export const getItems = async (
