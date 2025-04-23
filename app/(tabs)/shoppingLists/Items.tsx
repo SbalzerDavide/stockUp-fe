@@ -1,7 +1,6 @@
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import { Pressable, ScrollView } from "react-native";
 
 import { ItemCard } from "@/features/shoppingList/components/ItemCard";
-import colors from "tailwindcss/colors";
 import { Text } from "@/components/ui/text";
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -15,17 +14,8 @@ import { VStack } from "@/components/ui/vstack";
 import { Box } from "@/components/ui/box";
 import { debounce } from "lodash";
 import { Stack } from "expo-router";
-import { ListFilter, Icon } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
-import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetItem,
-  ActionsheetItemText,
-} from "@/components/ui/actionsheet";
+
 import { ThemedView } from "@/components/ThemedView";
 import { Input, InputField } from "@/components/ui/input";
 import { useThemeColor } from "@/hooks/useThemeColor";
