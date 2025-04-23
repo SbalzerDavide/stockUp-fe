@@ -1,20 +1,18 @@
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 
-import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ItemCard } from "@/features/shoppingList/components/ItemCard";
-import { Switch } from "@/components/ui/switch";
 import colors from "tailwindcss/colors";
 import { Text } from "@/components/ui/text";
 
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
+  useCreateItem,
   useItemCategories,
   useItems,
   useMacronutriments,
 } from "@/features/shoppingList/api/shoppingList.mutations";
 import { VStack } from "@/components/ui/vstack";
 import { Box } from "@/components/ui/box";
-import { useState } from "react";
 import { debounce } from "lodash";
 import { Stack } from "expo-router";
 import { ListFilter, Icon } from "lucide-react-native";
@@ -29,29 +27,19 @@ import {
   ActionsheetItemText,
 } from "@/components/ui/actionsheet";
 import { ThemedView } from "@/components/ThemedView";
+import { Input, InputField } from "@/components/ui/input";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { useShowToast } from "@/hooks/useShowToast";
+import { Filter, FilterOption } from "@/models/filter.model";
+import FilterComponent from "@/components/Filter";
 
-interface Filter {
-  id: string;
-  name: string;
-  options:
-    | {
-        id: string | boolean;
-        name: string;
-      }[]
-    | undefined;
-  value: string | boolean | null;
-}
 export default function ItemsScreen() {
+  const color = useThemeColor({}, "text");
+
   const { t } = useTranslation();
 
-  const [isEdible, setIsEdible] = useState(true);
+  const [inputText, setInputText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState("");
-  const [showActionsheet, setShowActionsheet] = useState(false);
-
-  const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
-  const [activeFilterIndex, setActiveFilterIndex] = useState<number | null>(
-    null
-  );
 
   const { data: macronutriments } = useMacronutriments();
   const { data: itemCategories } = useItemCategories();
@@ -69,22 +57,54 @@ export default function ItemsScreen() {
     {
       id: "macronutriments",
       name: t("common.macronutriments"),
-      options: macronutriments?.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-      })),
+      options: [],
       value: null,
     },
     {
       id: "categories",
       name: t("common.categories"),
-      options: itemCategories?.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-      })),
+      options: [],
       value: null,
     },
   ]);
+
+  useEffect(() => {
+    setFilters((prevFilters) => {
+      const updatedFilters = [...prevFilters];
+
+      // Update macronutriments filter if data is available
+      if (macronutriments && Array.isArray(macronutriments)) {
+        const macroIndex = updatedFilters.findIndex(
+          (f) => f.id === "macronutriments"
+        );
+        if (macroIndex !== -1) {
+          updatedFilters[macroIndex] = {
+            ...updatedFilters[macroIndex],
+            options: macronutriments.map((item: any) => ({
+              id: item.id,
+              name: item.name,
+            })),
+          };
+        }
+      }
+
+      // Update categories filter if data is available
+      if (itemCategories && Array.isArray(itemCategories)) {
+        const catIndex = updatedFilters.findIndex((f) => f.id === "categories");
+        if (catIndex !== -1) {
+          updatedFilters[catIndex] = {
+            ...updatedFilters[catIndex],
+            options: itemCategories.map((item: any) => ({
+              id: item.id,
+              name: item.name,
+            })),
+          };
+        }
+      }
+
+      return updatedFilters;
+    });
+  }, [macronutriments, itemCategories]);
 
   const {
     data: items,
@@ -101,34 +121,48 @@ export default function ItemsScreen() {
       undefined,
   });
 
-  const debouncedSearch = debounce((text: string) => {
-    setDebouncedSearchText(text);
-  }, 300);
+  const debouncedSearch = useCallback(
+    debounce((text: string) => {
+      setDebouncedSearchText(text);
+    }, 500),
+    []
+  );
 
-  const openFilter = (filter: any, index: number) => () => {
-    setShowActionsheet(true);
-    setActiveFilter(filter);
-    setActiveFilterIndex(index);
-    console.log("Open filter", filter);
-  };
-  const handleClose = () => setShowActionsheet(false);
+  useEffect(() => {
+    debouncedSearch(inputText);
 
-  const applyFilter = (filter: any) => () => {
-    setFilters((filters) => {
-      const updatedFilters = [...filters];
-      console.log("filter", filter);
-      if (filter == null) {
-        updatedFilters[activeFilterIndex!].value = null;
-      } else {
-        updatedFilters[activeFilterIndex!].value = filter?.id;
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [inputText, debouncedSearch]);
+
+  const { mutate: createItem, isPending, isSuccess } = useCreateItem();
+
+  const showToast = useShowToast();
+
+  const handleCreateItem = async () => {
+    createItem(
+      {
+        name: debouncedSearchText,
+      },
+      {
+        onSuccess: () => {
+          showToast({
+            titleKey: "toasts.success.title",
+            descriptionKey: "toasts.success.itemCreated",
+            action: "success",
+          });
+          setInputText("");
+        },
+        onError: () => {
+          showToast({
+            titleKey: "toasts.error.title",
+            descriptionKey: "toasts.error.createFailed",
+            action: "error",
+          });
+        },
       }
-      return updatedFilters;
-    });
-
-    // setFilters(updatedFilters);
-    console.log(filters);
-
-    handleClose();
+    );
   };
 
   return (
@@ -136,139 +170,57 @@ export default function ItemsScreen() {
       <Stack.Screen
         options={{
           headerBackVisible: true,
-          // headerSearchBarOptions: {
-          //   placeholder: t("common.labels.searchText"),
-          //   onChangeText: (text) => {
-          //     debouncedSearch(text.nativeEvent.text);
-          //   },
-          // },
         }}
       />
       <ThemedView className="flex-col gap-4 h-full p-4">
         <ScrollView>
-          {/* <Box className="w-full flex flex-row justify-between py-4 bg-neutral-50"> */}
-            {/* <Switch
-            size="md"
-            isDisabled={false}
-            value={isEdible}
-            trackColor={{
-              false: colors.neutral[300],
-              true: colors.neutral[600],
-            }}
-            thumbColor={colors.neutral[50]}
-            ios_backgroundColor={colors.neutral[300]}
-            onValueChange={(val) => {
-              setIsEdible(val);
-            }}
-          /> */}
-            <ThemedView className="w-full flex flex-row justify-between py-4">
-              <ScrollView horizontal={true}>
-                <Box className="flex flex-row gap-2 ml-4">
-                {filters?.map((filter, index) => (
-                  <Pressable
-                    key={filter.id}
-                    onPress={openFilter(filter, index)}
-                    className="bg-background-900 rounded-lg"
-                  >
-                    {filter.value != null ? (
-                      <Text className="bg-primary-400 p-2 rounded-lg">
-                        {
-                          filter.options?.find((el) => el.id === filter.value)
-                            ?.name
-                        }
-                      </Text>
-                    ) : (
-                      <Text className="p-2 rounded-lg">{filter.name}</Text>
-                    )}
-                  </Pressable>
-                ))}
-                </Box>
-              </ScrollView>
-            </ThemedView>
-            {/* <ListFilter size={24} /> */}
-          {/* </Box> */}
+          <ThemedView className="w-full flex flex-row justify-between py-4">
+            <ScrollView horizontal={true}>
+              <FilterComponent filters={filters} setFilters={setFilters} />
+            </ScrollView>
+          </ThemedView>
+          <Box className="w-full p-4">
+            <Input>
+              <InputField
+                style={{ color }}
+                value={inputText}
+                placeholder={t("common.labels.searchText")}
+                onChangeText={(text) => setInputText(text)}
+              />
+            </Input>
+          </Box>
+          <Box className="w-full p-4">
+            {debouncedSearchText != "" &&
+              items &&
+              items.results?.filter((el) => el.name === debouncedSearchText)
+                .length === 0 && (
+                <Pressable
+                  className="bg-primary-400 rounded-lg p-2"
+                  onPress={() => handleCreateItem()}
+                >
+                  <Text>Add New Item: {debouncedSearchText}</Text>
+                </Pressable>
+              )}
+          </Box>
 
           <VStack className="gap-4 p-4" reversed={false}>
-            {items?.results?.map((item) => (
-              <ItemCard
-                key={item.id}
-                title={item.name}
-                description={item.description}
-                macronutrients={item.macronutriments?.name || ''}
-                category={item.category?.name || ''}
-                department={item.department || ''}
-              />
-            ))}
+            {items && items.results?.length > 0 ? (
+              items?.results?.map((item) => (
+                <ItemCard
+                  key={item.id}
+                  title={item.name}
+                  description={item.description}
+                  macronutrients={item.macronutriments?.name || ""}
+                  category={item.category?.name || ""}
+                  department={item.department || ""}
+                />
+              ))
+            ) : (
+              <Text>No items found</Text>
+            )}
           </VStack>
         </ScrollView>
       </ThemedView>
-      <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
-        <ActionsheetBackdrop />
-        <ActionsheetContent className="overflow-hidden p-0">
-          <ActionsheetDragIndicatorWrapper className="bg-secondary-400">
-            <ActionsheetDragIndicator />
-          </ActionsheetDragIndicatorWrapper>
-          <Box className="w-full flex flex-row justify-between p-4 bg-secondary-400">
-            <Text>{activeFilter?.name}</Text>
-            {activeFilter?.value != null && (
-              <Pressable onPress={applyFilter(null)}>
-                <Text className="text-primary-400">Remove</Text>
-              </Pressable>
-            )}
-          </Box>
-          {activeFilter?.options?.map((filter: any) => (
-            <ActionsheetItem
-              key={filter.value}
-              className="px-5"
-              onPress={applyFilter(filter)}
-            >
-              <ActionsheetItemText
-                className={
-                  activeFilter?.value == filter.id ? "text-primary-600" : ""
-                }
-              >
-                {filter.name}
-              </ActionsheetItemText>
-              {/* <ActionsheetItemText>{activeFilter?.value}</ActionsheetItemText> */}
-              {/* <ActionsheetItemText>{filter?.id?.toString()}</ActionsheetItemText> */}
-            </ActionsheetItem>
-          ))}
-          {/* {activeFilter?.value != null && (
-            <ActionsheetItem onPress={applyFilter(null)}>
-              <ActionsheetItemText>Remove</ActionsheetItemText>
-            </ActionsheetItem>
-          )} */}
-
-          {/* <ActionsheetItem onPress={() => console.log("Hello")}>
-            <ActionsheetItemText>Edit Message</ActionsheetItemText>
-          </ActionsheetItem>
-          <ActionsheetItem onPress={() => console.log("Hello")}>
-            <ActionsheetItemText>Mark Unread</ActionsheetItemText>
-          </ActionsheetItem>
-          <ActionsheetItem onPress={() => console.log("Hello")}>
-            <ActionsheetItemText>Remind Me</ActionsheetItemText>
-          </ActionsheetItem>
-          <ActionsheetItem onPress={() => console.log("Hello")}>
-            <ActionsheetItemText>Add to Saved Items</ActionsheetItemText>
-          </ActionsheetItem>
-          <ActionsheetItem isDisabled onPress={() => console.log("Hello")}>
-            <ActionsheetItemText>Delete</ActionsheetItemText>
-          </ActionsheetItem> */}
-        </ActionsheetContent>
-      </Actionsheet>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
-  },
-  titleContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
-});
