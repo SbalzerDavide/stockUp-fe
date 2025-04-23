@@ -42,7 +42,6 @@ export default function FilterComponent({
     } else {
       updatedFilters[activeFilterIndex!].value = filter?.id;
     }
-    console.log('updatedFilters ciao', updatedFilters);
     setFilters(updatedFilters);
 
     handleClose();
