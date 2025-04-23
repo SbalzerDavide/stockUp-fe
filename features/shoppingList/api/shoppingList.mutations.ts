@@ -75,7 +75,7 @@ export function useCreateShoppingList() {
 
 export function useMacronutriments() {
   return useQuery({
-    queryKey: [...ITEMS_QUERY_KEY],
+    queryKey: ['macronutriments'],
     queryFn: () => getItemMacronutriments(),
     // Opzioni aggiuntive della query
     staleTime: 5 * 60 * 1000, // Considera i dati "freschi" per 5 minuti
@@ -85,7 +85,7 @@ export function useMacronutriments() {
 
 export function useItemCategories() {
   return useQuery({
-    queryKey: [...ITEMS_QUERY_KEY],
+    queryKey: ['itemCategories'],
     queryFn: () => getItemCategories(),
   });
 }
