@@ -9,7 +9,7 @@ import { BaseCard } from "@/components/BaseCard";
 import { Plus } from "lucide-react-native";
 import { ShoppingListCard } from "@/features/shoppingList/components/ShoppingListCard";
 
-export default function Index() {
+export default function ShoppingListScreen() {
   const { data: shoppingLists, isLoading, error } = useShoppingLists();
   console.log(shoppingLists);
 
