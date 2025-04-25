@@ -13,7 +13,7 @@ import {
 import { VStack } from "@/components/ui/vstack";
 import { Box } from "@/components/ui/box";
 import { debounce } from "lodash";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 import { ThemedView } from "@/components/ThemedView";
@@ -199,6 +199,8 @@ export default function ItemsScreen() {
             {items && items.results?.length > 0 ? (
               items?.results?.map((item) => (
                 <ItemCard
+                  onSelect={() => router.push(`/(tabs)/shoppingLists/(items)/detail/${item.id}`)}
+                  id={item.id}
                   key={item.id}
                   title={item.name}
                   description={item.description}
