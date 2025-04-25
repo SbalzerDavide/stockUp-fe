@@ -31,7 +31,7 @@ export default function Index() {
         },
         {
           title: "Items",
-          link: "/(tabs)/shoppingLists/Items",
+          link: "/(tabs)/shoppingLists/(items)",
         },
       ],
     },
