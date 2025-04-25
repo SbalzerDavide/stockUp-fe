@@ -1,14 +1,17 @@
-import { Text, Image, StyleSheet } from "react-native";
+import { Text, Image, StyleSheet, Pressable } from "react-native";
 import { Box } from "@/components/ui/box";
 import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 
 interface CardProps {
   title: string;
   description?: string;
+  id: string;
   macronutrients?: string;
   category?: string;
   department?: string;
   quantity?: number;
+  onSelect?: (id: string) => void;
 }
 
 function truncateString(str: string, maxLength: number = 24): string {
@@ -21,14 +24,22 @@ function truncateString(str: string, maxLength: number = 24): string {
 export function ItemCard({
   title,
   description,
+  id,
   macronutrients,
   category,
   department,
   quantity,
+  onSelect,
 }: CardProps) {
+  const handlePress = () => {
+    if(onSelect){
+      onSelect(id);
+    }
+  };
+
   return (
-    <Box className="bg-background-900 rounded-lg p-3 shadow-md">
-      <Box className="flex-row items-center flex-grow">
+    <Pressable onPress={handlePress} className="rounded-lg !bg-background-900 p-4 shadow-md">
+      <ThemedView className="flex-row !bg-background-900 gap-2 w-full">
         <Box className="flex-1">
           <ThemedText className="text-lg font-bold">{title}</ThemedText>
         </Box>
@@ -44,8 +55,8 @@ export function ItemCard({
             </ThemedText>
           </Box>
         </Box>
-      </Box>
-    </Box>
+      </ThemedView>
+    </Pressable>
   );
 }
 
