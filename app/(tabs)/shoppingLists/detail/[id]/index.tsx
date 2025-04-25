@@ -170,6 +170,7 @@ export default function ItemsScreen() {
               shoppingListItems?.items?.map((item) => (
                 <ItemCard
                   key={item.id}
+                  id={item.id}
                   title={item.item_name}
                   quantity={item.quantity}
                   // macronutrients={item.macronutriments || ''}
