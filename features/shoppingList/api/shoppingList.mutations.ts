@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createItem, getItems, getItemMacronutriments, getItemCategories, getShoppingLists, createShoppingList, getShoppingListItems } from './shoppingList-api-client';
+import { createItem, getItems, getItemMacronutriments, getItemCategories, getShoppingLists, createShoppingList, getShoppingListItems, getItemDetail } from './shoppingList-api-client';
 import { createItemRequest, ItemsQueryParams } from '@/models/items.model';
 import { useShowToast } from '@/hooks/useShowToast';
 import { createShoppingListRequest } from '@/models/shoppingList.model';
@@ -30,6 +30,14 @@ export function useShoppingListItems(id: string) {
     queryKey: ['shoppingListItems', id],
     queryFn: () => getShoppingListItems(id),
   });
+}
+
+export function useItemDetail(id:string){
+  return useQuery({
+    queryKey: ['itemDetail', id],
+    queryFn: () => getItemDetail(id),
+  });
+
 }
 
 

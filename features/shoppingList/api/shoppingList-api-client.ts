@@ -2,6 +2,7 @@ import { api } from "@/core/api-client";
 import {
   createItemRequest,
   Item,
+  ItemDetail,
   ItemsQueryParams,
 } from "@/models/items.model";
 import { ItemMacronutriments, ItemCategory } from "@/models/items.model";
@@ -37,6 +38,20 @@ export const getShoppingListItems  = async (id: string): Promise<ShoppingListDet
     throw error;
   }
 };
+
+export const getItemDetail  = async (id: string): Promise<ItemDetail> => {
+  try {
+    const response = await api.get(`/items/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Errore in getItemDetail:", {
+      error,
+    });
+    throw error;
+  }
+};
+
+
 
 export const getItems = async (
   params: ItemsQueryParams
