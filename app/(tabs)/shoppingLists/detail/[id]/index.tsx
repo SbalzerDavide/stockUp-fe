@@ -44,7 +44,7 @@ interface Filter {
     | undefined;
   value: string | boolean | null;
 }
-export default function ItemsScreen() {
+export default function ShoppingListDetailScreen() {
   const { id } = useLocalSearchParams();
 
   const { t } = useTranslation();
@@ -128,12 +128,12 @@ export default function ItemsScreen() {
         options={{
           title: shoppingListItems?.name,
           headerBackVisible: true,
-          headerRight: () => <Pressable
-            onPress={() => router.push(`/(tabs)/shoppingLists/detail/${id}/newShoppingListItem`)}
-            className="p-5 bg-primary-500"
-          >
-            <Plus />
-          </Pressable>,
+          // headerRight: () => <Pressable
+          //   onPress={() => router.push(`/(tabs)/shoppingLists/detail/${id}/newShoppingListItem`)}
+          //   className="p-5 bg-primary-500"
+          // >
+          //   <Plus />
+          // </Pressable>,
         }}
       />
       <ThemedView className="flex-col gap-4 h-full p-4">
