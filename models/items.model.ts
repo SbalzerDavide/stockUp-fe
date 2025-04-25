@@ -1,5 +1,5 @@
 export interface Item {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   category?: ItemCategory;
@@ -26,7 +26,7 @@ export interface ItemsQueryParams {
   is_edible?: boolean;
   macronutriments?: string;
   consumation_average_days?: number;
-  price?: number;  
+  price?: number;
 }
 
 export interface ItemMacronutriments {
@@ -45,3 +45,32 @@ export interface ItemCategory {
   updated_at?: string;
 }
 
+export interface ItemDetail {
+  id: 1;
+  user: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+  category?: {
+    id: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+  };
+  macronutriments?: {
+    id: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+  };
+  name: string;
+  consumation_average_days?: any;
+  department?: string;
+  is_edible?: boolean;
+  created_at: string;
+  updated_at: string;
+}
