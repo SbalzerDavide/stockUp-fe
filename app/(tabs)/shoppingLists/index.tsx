@@ -11,7 +11,6 @@ import { ShoppingListCard } from "@/features/shoppingList/components/ShoppingLis
 
 export default function ShoppingListScreen() {
   const { data: shoppingLists, isLoading, error } = useShoppingLists();
-  console.log(shoppingLists);
 
   return (
     <>
