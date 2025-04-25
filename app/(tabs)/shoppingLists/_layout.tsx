@@ -11,7 +11,7 @@ export default function ShoppingListsLayoutScreen() {
         {/* <Stack.Screen name="Items" /> */}
 
         <Stack.Screen
-          name="(items)"
+          name="items"
           options={{
             headerShown: false,
           }}
