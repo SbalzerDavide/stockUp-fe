@@ -1,7 +1,7 @@
 import { User } from "./auth.model";
 
 export interface ShoppingList {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   is_active: boolean;
@@ -11,7 +11,7 @@ export interface ShoppingList {
 }
 
 export interface ShoppingListItem {
-  id: number;
+  id: string;
   item_name: string;
   item_id: number;
   is_checked: boolean;
@@ -27,7 +27,7 @@ export interface ShoppingListItem {
 }
 
 export interface ShoppingListDetail {
-  id: number;
+  id: string;
   user: User;
   name: string;
   description?: string;
