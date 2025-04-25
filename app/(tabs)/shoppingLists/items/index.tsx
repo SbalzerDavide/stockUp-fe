@@ -199,7 +199,7 @@ export default function ItemsScreen() {
             {items && items.results?.length > 0 ? (
               items?.results?.map((item) => (
                 <ItemCard
-                  onSelect={() => router.push(`/(tabs)/shoppingLists/(items)/detail/${item.id}`)}
+                  onSelect={() => router.push(`/(tabs)/shoppingLists/items/detail/${item.id}`)}
                   id={item.id}
                   key={item.id}
                   title={item.name}
