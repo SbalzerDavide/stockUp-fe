@@ -160,6 +160,7 @@ export default function ItemsScreen() {
       <Stack.Screen
         options={{
           headerBackVisible: true,
+          headerShadowVisible: false
         }}
       />
       <ThemedView className="flex-col gap-4 h-full p-4">
@@ -194,6 +195,7 @@ export default function ItemsScreen() {
           </Box>
 
           <VStack className="gap-4 p-4" reversed={false}>
+            <Text>ciaonneee nuovo items</Text>
             {items && items.results?.length > 0 ? (
               items?.results?.map((item) => (
                 <ItemCard
