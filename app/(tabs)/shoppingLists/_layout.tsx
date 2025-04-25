@@ -1,34 +1,31 @@
-import { Button, Pressable, StyleSheet } from "react-native";
-
 import React from "react";
-import { useItems } from "@/features/shoppingList/api/shoppingList.mutations";
-import { router, Stack } from "expo-router";
-import { Icon, Plus } from "lucide-react-native";
+import { Stack } from "expo-router";
 
-export default function ShoppingListsScreen() {
+export default function ShoppingListsLayoutScreen() {
   return (
     <>
       <Stack>
         <Stack.Screen
           name="index"
-          // options={{
-          //   headerTitle: "Shopping lists",
-          //   headerRight: () => (
-          //     <Pressable
-          //       onPress={() => router.push("/(tabs)/shoppingLists/NewItem")}
-          //       className="p-5 bg-primary-500"
-          //     >
-          //       <Plus />
-          //     </Pressable>
-          //   ),
-          // }}
         />
-        <Stack.Screen name="Items" />
+        {/* <Stack.Screen name="Items" /> */}
 
         <Stack.Screen
-          name="NewItem"
+          name="(items)"
           options={{
-            presentation: "modal",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="newShoppingList"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="detail"
+          options={{
+            headerShown: false,
           }}
         />
       </Stack>
