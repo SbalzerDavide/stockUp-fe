@@ -7,14 +7,16 @@ import colors from "tailwindcss/colors";
 import { Text } from "@/components/ui/text";
 import { Plus } from "lucide-react-native";
 
-
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import {
+  useCreateItem,
+  useCreateShoppingListItem,
   useItemCategories,
   useItems,
   useMacronutriments,
   useShoppingListItems,
 } from "@/features/shoppingList/api/shoppingList.mutations";
+
 import { VStack } from "@/components/ui/vstack";
 import { Box } from "@/components/ui/box";
 import { useState } from "react";
@@ -22,6 +24,8 @@ import { debounce } from "lodash";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { ListFilter, Icon } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
+import { Input, InputField } from "@/components/ui/input";
+
 import {
   Actionsheet,
   ActionsheetBackdrop,
@@ -32,6 +36,8 @@ import {
   ActionsheetItemText,
 } from "@/components/ui/actionsheet";
 import { ThemedView } from "@/components/ThemedView";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { useShowToast } from "@/hooks/useShowToast";
 
 interface Filter {
   id: string;
@@ -46,11 +52,14 @@ interface Filter {
 }
 export default function ShoppingListDetailScreen() {
   const { id } = useLocalSearchParams();
-
   const { t } = useTranslation();
+
+  const color = useThemeColor({}, "text");
 
   const [isEdible, setIsEdible] = useState(true);
   const [showActionsheet, setShowActionsheet] = useState(false);
+  const [inputText, setInputText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState("");
 
   const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
   const [activeFilterIndex, setActiveFilterIndex] = useState<number | null>(
@@ -90,24 +99,38 @@ export default function ShoppingListDetailScreen() {
     },
   ]);
 
+  // add debouncedSearchText for searching elements
   const {
     data: shoppingListItems,
     isLoading,
     error,
   } = useShoppingListItems(id as string);
 
+  const { data: items } = useItems({
+    search: debouncedSearchText,
+  });
+
+  const itemsNoAlreadyInList = () => {
+    if (!items?.results) {
+      return [];
+    }
+    return items?.results?.filter((item) => {
+      return !shoppingListItems?.items?.some(
+        (listItem) => listItem.id === item.id
+      );
+    });
+  };
+
   const openFilter = (filter: any, index: number) => () => {
     setShowActionsheet(true);
     setActiveFilter(filter);
     setActiveFilterIndex(index);
-    console.log("Open filter", filter);
   };
   const handleClose = () => setShowActionsheet(false);
 
   const applyFilter = (filter: any) => () => {
     setFilters((filters) => {
       const updatedFilters = [...filters];
-      console.log("filter", filter);
       if (filter == null) {
         updatedFilters[activeFilterIndex!].value = null;
       } else {
@@ -115,12 +138,96 @@ export default function ShoppingListDetailScreen() {
       }
       return updatedFilters;
     });
-
     // setFilters(updatedFilters);
-    console.log(filters);
-
     handleClose();
   };
+
+  const debouncedSearch = useCallback(
+    debounce((text: string) => {
+      setDebouncedSearchText(text);
+      // FE liter list items
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSearch(inputText);
+
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [inputText, debouncedSearch]);
+
+  const listItems = () => {
+    if (shoppingListItems?.items) {
+      return shoppingListItems?.items.filter((item) => {
+        return item.item_name.toLowerCase().includes(debouncedSearchText);
+      });
+    } else {
+      return [];
+    }
+  };
+
+  const { mutate: createShoppingListitem, isPending: isPendingShoppingListItem, isSuccess: isSuccessShoppingListItem } = useCreateShoppingListItem();
+  const { mutate: createItem, isPending, isSuccess } = useCreateItem();
+  const showToast = useShowToast();
+
+  const handleCreateShoppingListItem = async (itemId: string) => {
+    createShoppingListitem(
+      {
+        shoppingListId: id as string,
+        itemId
+      },
+      {
+        onSuccess: () => {
+          showToast({
+            titleKey: "toasts.success.title",
+            descriptionKey: "toasts.success.itemCreated",
+            action: "success",
+          });
+          setInputText("");
+        },
+        onError: () => {
+          showToast({
+            titleKey: "toasts.error.title",
+            descriptionKey: "toasts.error.createFailed",
+            action: "error",
+          });
+        },
+        onSettled: () => {
+        },
+      }
+    );
+  };
+
+
+  const handleCreateItem = async () => {
+    createItem(
+      {
+        name: debouncedSearchText,
+      },
+      {
+        onSuccess: (el) => {
+          handleCreateShoppingListItem(el.id)
+          showToast({
+            titleKey: "toasts.success.title",
+            descriptionKey: "toasts.success.itemCreated",
+            action: "success",
+          });
+          setInputText("");
+        },
+        onError: () => {
+          showToast({
+            titleKey: "toasts.error.title",
+            descriptionKey: "toasts.error.createFailed",
+            action: "error",
+          });
+        },
+      }
+    );
+  };
+
+  
 
   return (
     <>
@@ -138,6 +245,17 @@ export default function ShoppingListDetailScreen() {
       />
       <ThemedView className="flex-col gap-4 h-full p-4">
         <ScrollView>
+          <Box className="w-full p-4">
+            <Input>
+              <InputField
+                style={{ color }}
+                value={inputText}
+                placeholder={t("common.labels.searchText")}
+                onChangeText={(text) => setInputText(text)}
+              />
+            </Input>
+          </Box>
+
           <ThemedView className="w-full flex flex-row justify-between py-4">
             <ScrollView horizontal={true}>
               <Box className="flex flex-row gap-2 ml-4">
@@ -166,13 +284,53 @@ export default function ShoppingListDetailScreen() {
           {/* </Box> */}
 
           <VStack className="gap-4 p-4" reversed={false}>
-            {shoppingListItems && shoppingListItems.items.length > 0 ? (
-              shoppingListItems?.items?.map((item) => (
+            {listItems()?.length > 0 ? (
+              <Text>Already in list</Text>
+            ) : (
+              <Text>No items founded already in list</Text>
+            )}
+
+            {listItems()?.length > 0
+              ? listItems()?.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    id={item.id}
+                    title={item.item_name}
+                    quantity={item.quantity}
+                    emoji={item.emoji}
+                    // macronutrients={item.macronutriments || ''}
+                    // category={item.category || ''}
+                    // department={item.department || ''}
+                  />
+                ))
+              : debouncedSearchText == "" && <Text>No items found</Text>}
+            <Box className="w-full p-4">
+              {debouncedSearchText != "" &&
+                items &&
+                items.results?.filter((el) => el.name === debouncedSearchText)
+                  .length === 0 && (
+                  <Pressable
+                    className="bg-primary-400 rounded-lg p-2"
+                    onPress={() => handleCreateItem()}
+                  >
+                    <Text>Add New Item: {debouncedSearchText}</Text>
+                  </Pressable>
+                )}
+            </Box>
+
+            <Text>To add</Text>
+            {debouncedSearchText != "" &&
+            itemsNoAlreadyInList() &&
+            itemsNoAlreadyInList().length > 0 ? (
+              items?.results?.map((item) => (
                 <ItemCard
                   key={item.id}
                   id={item.id}
-                  title={item.item_name}
-                  quantity={item.quantity}
+                  title={item.name}
+                  emoji={item.emoji}
+                  onSelect={() =>
+                    handleCreateShoppingListItem(item.id)
+                  }
                   // macronutrients={item.macronutriments || ''}
                   // category={item.category || ''}
                   // department={item.department || ''}
