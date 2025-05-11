@@ -7,6 +7,7 @@ interface CardProps {
   title: string;
   description?: string;
   id: string;
+  emoji?: string;
   macronutrients?: string;
   category?: string;
   department?: string;
@@ -27,6 +28,7 @@ export function ItemCard({
   id,
   macronutrients,
   category,
+  emoji,
   department,
   quantity,
   onSelect,
@@ -41,7 +43,7 @@ export function ItemCard({
     <Pressable onPress={handlePress} className="rounded-lg !bg-background-900 p-4 shadow-md">
       <ThemedView className="flex-row !bg-background-900 gap-2 w-full">
         <Box className="flex-1">
-          <ThemedText className="text-lg font-bold">{title}</ThemedText>
+          <ThemedText className="text-lg font-bold">{emoji} {title}</ThemedText>
         </Box>
         <Box className="flex-col justify-between gap-3">
           <Box className="flex-row justify-end gap-2">
