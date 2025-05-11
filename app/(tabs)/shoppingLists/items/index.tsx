@@ -195,7 +195,6 @@ export default function ItemsScreen() {
           </Box>
 
           <VStack className="gap-4 p-4" reversed={false}>
-            <Text>ciaonneee nuovo items</Text>
             {items && items.results?.length > 0 ? (
               items?.results?.map((item) => (
                 <ItemCard
