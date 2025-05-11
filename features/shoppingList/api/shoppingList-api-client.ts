@@ -7,7 +7,7 @@ import {
 } from "@/models/items.model";
 import { ItemMacronutriments, ItemCategory } from "@/models/items.model";
 
-import { createShoppingListRequest, ShoppingList, ShoppingListDetail } from "@/models/shoppingList.model";
+import { createShoppingListRequest, ShoppingList, ShoppingListDetail, createShoppingListItemRequest } from "@/models/shoppingList.model";
 
 // shoppingList
 export const getShoppingLists = async (): Promise<{
@@ -122,3 +122,25 @@ export const createShoppingList = async (shoppingList: createShoppingListRequest
     throw error;
   }
 };
+
+export const createShoppingListItem = async (
+  createShoppingListItemRequest: createShoppingListItemRequest
+): Promise<ShoppingListDetail> => {
+  try {
+    const response = await api.post(
+      `/shopping_list_items/`,
+      {
+        item_id: createShoppingListItemRequest.itemId,
+        shopping_list_id: createShoppingListItemRequest.shoppingListId,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Errore in createShoppingListItem:", {
+      error,
+    });
+    throw error;
+  }
+}
+
+

@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createItem, getItems, getItemMacronutriments, getItemCategories, getShoppingLists, createShoppingList, getShoppingListItems, getItemDetail } from './shoppingList-api-client';
+import { createItem, getItems, getItemMacronutriments, getItemCategories, getShoppingLists, createShoppingList, getShoppingListItems, getItemDetail, createShoppingListItem } from './shoppingList-api-client';
 import { createItemRequest, ItemsQueryParams } from '@/models/items.model';
 import { useShowToast } from '@/hooks/useShowToast';
-import { createShoppingListRequest } from '@/models/shoppingList.model';
+import { createShoppingListItemRequest, createShoppingListRequest } from '@/models/shoppingList.model';
 
 // Chiave per la query degli items
 export const ITEMS_QUERY_KEY = ['items'] as const;
@@ -78,6 +78,27 @@ export function useCreateShoppingList() {
     },
   });
 }
+
+export function useCreateShoppingListItem() {
+  const showToast = useShowToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (createShoppingListItemRequest: createShoppingListItemRequest) => createShoppingListItem(createShoppingListItemRequest),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shoppingListItems'] });
+    },
+    onError: (error) => {
+      showToast({
+        titleKey: "toasts.error.title",
+        descriptionKey: "toasts.error.createFailed",
+        action: "error"
+      });
+    },
+  });
+}
+
+
 
 
 
