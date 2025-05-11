@@ -2,6 +2,7 @@ export interface Item {
   id: string;
   name: string;
   description?: string;
+  emoji?: string;
   category?: ItemCategory;
   department?: string;
   is_edible: boolean;

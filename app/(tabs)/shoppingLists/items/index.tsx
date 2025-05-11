@@ -203,6 +203,7 @@ export default function ItemsScreen() {
                   key={item.id}
                   title={item.name}
                   description={item.description}
+                  emoji={item?.emoji}
                   macronutrients={item.macronutriments?.name || ""}
                   category={item.category?.name || ""}
                   department={item.department || ""}
