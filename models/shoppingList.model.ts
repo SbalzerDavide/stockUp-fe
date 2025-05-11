@@ -17,6 +17,7 @@ export interface ShoppingListItem {
   is_checked: boolean;
   is_propposed: boolean;
   macronutriments: string | null;
+  emoji?: string;
   category: string | null;
   department: string | null;
   quantity: number;
@@ -42,3 +43,8 @@ export interface createShoppingListRequest {
   name: string;
   description?: string;
 }
+
+export interface createShoppingListItemRequest {
+  shoppingListId: string,
+  itemId: string
+} 
