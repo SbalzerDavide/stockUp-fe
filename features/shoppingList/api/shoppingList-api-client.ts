@@ -7,9 +7,9 @@ import {
 } from "@/models/items.model";
 import { ItemMacronutriments, ItemCategory } from "@/models/items.model";
 
-import { createShoppingListRequest, ShoppingList, ShoppingListDetail, createShoppingListItemRequest } from "@/models/shoppingList.model";
+import { createShoppingListRequest, ShoppingList, ShoppingListDetail, createShoppingListItemRequest, ShoppingListItem, ShoppingListItemDetail } from "@/models/shoppingList.model";
 
-// shoppingList
+// shoppingLists
 export const getShoppingLists = async (): Promise<{
   count: number;
   next: string | null;
@@ -27,7 +27,7 @@ export const getShoppingLists = async (): Promise<{
   }  
 };
 
-export const getShoppingListItems  = async (id: string): Promise<ShoppingListDetail> => {
+export const getShoppingList  = async (id: string): Promise<ShoppingListDetail> => {
   try {
     const response = await api.get(`/shopping-lists/${id}`);
     return response.data;
@@ -39,12 +39,12 @@ export const getShoppingListItems  = async (id: string): Promise<ShoppingListDet
   }
 };
 
-export const getItemDetail  = async (id: string): Promise<ItemDetail> => {
+export const createShoppingList = async (shoppingList: createShoppingListRequest): Promise<ShoppingList> => {
   try {
-    const response = await api.get(`/items/${id}`);
+    const response = await api.post("/shopping-lists/", shoppingList);
     return response.data;
   } catch (error) {
-    console.error("Errore in getItemDetail:", {
+    console.error("Errore in createShoppingList:", {
       error,
     });
     throw error;
@@ -52,7 +52,7 @@ export const getItemDetail  = async (id: string): Promise<ItemDetail> => {
 };
 
 
-
+// items
 export const getItems = async (
   params: ItemsQueryParams
 ): Promise<{
@@ -73,26 +73,12 @@ export const getItems = async (
   }
 };
 
-export const getItemMacronutriments = async (): Promise<
-  ItemMacronutriments[]
-> => {
+export const getItem  = async (id: string): Promise<ItemDetail> => {
   try {
-    const response = await api.get("/item-macronutriments/");
+    const response = await api.get(`/items/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Errore in getMacronutriments:", {
-      error,
-    });
-    throw error;
-  }
-};
-
-export const getItemCategories = async (): Promise<ItemCategory[]> => {
-  try {
-    const response = await api.get("/item-categories/");
-    return response.data;
-  } catch (error) {
-    console.error("Errore in getItemCategories:", {
+    console.error("Errore in getItemDetail:", {
       error,
     });
     throw error;
@@ -111,17 +97,46 @@ export const createItem = async (item: createItemRequest): Promise<Item> => {
   }
 };
 
-export const createShoppingList = async (shoppingList: createShoppingListRequest): Promise<ShoppingList> => {
+// macronutriments
+export const getItemMacronutriments = async (): Promise<
+  ItemMacronutriments[]
+> => {
   try {
-    const response = await api.post("/shopping-lists/", shoppingList);
+    const response = await api.get("/item-macronutriments/");
     return response.data;
   } catch (error) {
-    console.error("Errore in createShoppingList:", {
+    console.error("Errore in getMacronutriments:", {
       error,
     });
     throw error;
   }
 };
+
+// categories
+export const getItemCategories = async (): Promise<ItemCategory[]> => {
+  try {
+    const response = await api.get("/item-categories/");
+    return response.data;
+  } catch (error) {
+    console.error("Errore in getItemCategories:", {
+      error,
+    });
+    throw error;
+  }
+};
+
+// shoppingListItems
+export const shoppingListItem = async (id: string): Promise<ShoppingListItemDetail> => {
+  try {
+    const response = await api.get(`/shopping_list_items/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Errore in getShoppingListItemDetail:", {
+      error,
+    });
+    throw error;
+  }
+}
 
 export const createShoppingListItem = async (
   createShoppingListItemRequest: createShoppingListItemRequest
@@ -142,5 +157,4 @@ export const createShoppingListItem = async (
     throw error;
   }
 }
-
 

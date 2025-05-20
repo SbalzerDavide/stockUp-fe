@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "@/components/ui/text";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useItemDetail, useShoppingListItems } from "@/features/shoppingList/api/shoppingList.mutations";
+import { useItem } from "@/features/shoppingList/api/shoppingList.mutations";
 import { Pressable } from "react-native";
 import { Plus } from "lucide-react-native";
 import { ThemedView } from "@/components/ThemedView";
@@ -13,7 +13,7 @@ export default function itemDetailScreen(){
     data: item,
     isLoading,
     error,
-  } = useItemDetail(id as string);
+  } = useItem(id as string);
 
 
   return (
