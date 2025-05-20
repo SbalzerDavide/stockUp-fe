@@ -18,7 +18,6 @@ export default function ShoppingListsDetailLayoutScreen() {
         <Stack.Screen
           name="shoppingListItem/[id]/index"
           options={{
-            title: "shoppingListItemDetail screen!",
             presentation: "modal",
           }}
         />
