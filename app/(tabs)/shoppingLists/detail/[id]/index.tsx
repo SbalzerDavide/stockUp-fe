@@ -14,7 +14,7 @@ import {
   useItemCategories,
   useItems,
   useMacronutriments,
-  useShoppingListItems,
+  useShoppingList,
 } from "@/features/shoppingList/api/shoppingList.mutations";
 
 import { VStack } from "@/components/ui/vstack";
@@ -38,6 +38,7 @@ import {
 import { ThemedView } from "@/components/ThemedView";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useShowToast } from "@/hooks/useShowToast";
+import { ItemCardQuantity } from "@/features/shoppingList/components/ItemCardQuantity";
 
 interface Filter {
   id: string;
@@ -101,10 +102,10 @@ export default function ShoppingListDetailScreen() {
 
   // add debouncedSearchText for searching elements
   const {
-    data: shoppingListItems,
+    data: shoppingList,
     isLoading,
     error,
-  } = useShoppingListItems(id as string);
+  } = useShoppingList(id as string);
 
   const { data: items } = useItems({
     search: debouncedSearchText,
@@ -115,7 +116,7 @@ export default function ShoppingListDetailScreen() {
       return [];
     }
     return items?.results?.filter((item) => {
-      return !shoppingListItems?.items?.some(
+      return !shoppingList?.items?.some(
         (listItem) => listItem.id === item.id
       );
     });
@@ -159,8 +160,8 @@ export default function ShoppingListDetailScreen() {
   }, [inputText, debouncedSearch]);
 
   const listItems = () => {
-    if (shoppingListItems?.items) {
-      return shoppingListItems?.items.filter((item) => {
+    if (shoppingList?.items) {
+      return shoppingList?.items.filter((item) => {
         return item.item_name.toLowerCase().includes(debouncedSearchText);
       });
     } else {
@@ -233,7 +234,7 @@ export default function ShoppingListDetailScreen() {
     <>
       <Stack.Screen
         options={{
-          title: shoppingListItems?.name,
+          title: shoppingList?.name,
           headerBackVisible: true,
           // headerRight: () => <Pressable
           //   onPress={() => router.push(`/(tabs)/shoppingLists/detail/${id}/newShoppingListItem`)}
@@ -292,12 +293,17 @@ export default function ShoppingListDetailScreen() {
 
             {listItems()?.length > 0
               ? listItems()?.map((item) => (
-                  <ItemCard
+                  <ItemCardQuantity
                     key={item.id}
                     id={item.id}
                     title={item.item_name}
                     quantity={item.quantity}
                     emoji={item.emoji}
+                    onSelect={() =>
+                      router.push(
+                        `/(tabs)/shoppingLists/detail/${id}/${item.id}`
+                      )
+                    }
                     // macronutrients={item.macronutriments || ''}
                     // category={item.category || ''}
                     // department={item.department || ''}
