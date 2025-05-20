@@ -301,7 +301,7 @@ export default function ShoppingListDetailScreen() {
                     emoji={item.emoji}
                     onSelect={() =>
                       router.push(
-                        `/(tabs)/shoppingLists/detail/${id}/${item.id}`
+                        `/(tabs)/shoppingLists/detail/${id}/shoppingListItem/${item.id}`
                       )
                     }
                     // macronutrients={item.macronutriments || ''}
