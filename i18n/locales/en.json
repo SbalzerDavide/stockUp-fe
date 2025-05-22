@@ -12,7 +12,8 @@
       "description": "Description",
       "enterName": "Enter a name",
       "enterDescription": "Enter a description",
-      "searchText": "Search"
+      "searchText": "Search",
+      "quantity": "Quantity"
     },
     "is_edible": {
       "label": "Edibility",

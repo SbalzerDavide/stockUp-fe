@@ -12,7 +12,8 @@
       "description": "Descrizione",
       "enterName": "Inserisci un nome",
       "enterDescription": "Inserisci una descrizione",
-      "searchText": "Cerca"
+      "searchText": "Cerca",
+      "quantity": "Quantità"
     },
     "is_edible": {
       "label": "Edibilità",
