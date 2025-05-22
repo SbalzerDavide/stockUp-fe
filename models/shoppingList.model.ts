@@ -70,3 +70,14 @@ export interface createShoppingListItemRequest {
   shoppingListId: string,
   itemId: string
 } 
+
+export interface UpdateShoppingListItemRequest {
+  is_checked?: boolean;
+  is_proposed?: boolean;
+  quantity?: number;
+  weight?: number;
+  unit_weight?: string;
+  volume?: number;
+  unit_volume?: string;
+
+}

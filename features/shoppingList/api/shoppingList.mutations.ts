@@ -10,12 +10,15 @@ import {
   getShoppingList,
   getItem,
   shoppingListItem,
+  updateShoppingListItem,
+  deleteShoppingListItem,
 } from "./shoppingList-api-client";
 import { createItemRequest, ItemsQueryParams } from "@/models/items.model";
 import { useShowToast } from "@/hooks/useShowToast";
 import {
   createShoppingListItemRequest,
   createShoppingListRequest,
+  UpdateShoppingListItemRequest,
 } from "@/models/shoppingList.model";
 
 // Chiave per la query degli items
@@ -58,7 +61,6 @@ export function useCreateShoppingList() {
     },
   });
 }
-
 
 // items
 export function useItems(params: ItemsQueryParams) {
@@ -128,6 +130,58 @@ export function useCreateShoppingListItem() {
   });
 }
 
+// update
+export function useUpdateShoppingListItem() {
+  const showToast = useShowToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: {
+      itemId: number;
+      updateShoppingListItemRequest: UpdateShoppingListItemRequest;
+    }) =>
+      updateShoppingListItem(
+        request.itemId,
+        request.updateShoppingListItemRequest
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shoppingListItems"] });
+      queryClient.invalidateQueries({ queryKey: ["shoppingListItemDetail"] });
+    },
+    onError: (error) => {
+      showToast({
+        titleKey: "toasts.error.title",
+        descriptionKey: "toasts.error.createFailed",
+        action: "error",
+      });
+    },
+  });
+}
+
+// delete
+export function useDeleteShoppingListItem() {
+  const showToast = useShowToast();
+  const queryClient = useQueryClient();
+    return useMutation({
+    mutationFn: (
+      itemId: number
+    ) =>
+      deleteShoppingListItem(
+        itemId,
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shoppingListItems"] });
+    },
+    onError: (error) => {
+      showToast({
+        titleKey: "toasts.error.title",
+        descriptionKey: "toasts.error.createFailed",
+        action: "error",
+      });
+    },
+  });
+}
+
 
 // macronutriments
 export function useMacronutriments() {
@@ -139,7 +193,6 @@ export function useMacronutriments() {
     gcTime: 30 * 60 * 1000, // Mantieni i dati in cache per 30 minuti
   });
 }
-
 
 // categories
 export function useItemCategories() {

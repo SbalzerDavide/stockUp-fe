@@ -7,7 +7,15 @@ import {
 } from "@/models/items.model";
 import { ItemMacronutriments, ItemCategory } from "@/models/items.model";
 
-import { createShoppingListRequest, ShoppingList, ShoppingListDetail, createShoppingListItemRequest, ShoppingListItem, ShoppingListItemDetail } from "@/models/shoppingList.model";
+import {
+  createShoppingListRequest,
+  ShoppingList,
+  ShoppingListDetail,
+  createShoppingListItemRequest,
+  ShoppingListItem,
+  ShoppingListItemDetail,
+  UpdateShoppingListItemRequest,
+} from "@/models/shoppingList.model";
 
 // shoppingLists
 export const getShoppingLists = async (): Promise<{
@@ -24,10 +32,12 @@ export const getShoppingLists = async (): Promise<{
       error,
     });
     throw error;
-  }  
+  }
 };
 
-export const getShoppingList  = async (id: string): Promise<ShoppingListDetail> => {
+export const getShoppingList = async (
+  id: string
+): Promise<ShoppingListDetail> => {
   try {
     const response = await api.get(`/shopping-lists/${id}`);
     return response.data;
@@ -39,7 +49,9 @@ export const getShoppingList  = async (id: string): Promise<ShoppingListDetail> 
   }
 };
 
-export const createShoppingList = async (shoppingList: createShoppingListRequest): Promise<ShoppingList> => {
+export const createShoppingList = async (
+  shoppingList: createShoppingListRequest
+): Promise<ShoppingList> => {
   try {
     const response = await api.post("/shopping-lists/", shoppingList);
     return response.data;
@@ -50,7 +62,6 @@ export const createShoppingList = async (shoppingList: createShoppingListRequest
     throw error;
   }
 };
-
 
 // items
 export const getItems = async (
@@ -73,7 +84,7 @@ export const getItems = async (
   }
 };
 
-export const getItem  = async (id: string): Promise<ItemDetail> => {
+export const getItem = async (id: string): Promise<ItemDetail> => {
   try {
     const response = await api.get(`/items/${id}`);
     return response.data;
@@ -126,7 +137,9 @@ export const getItemCategories = async (): Promise<ItemCategory[]> => {
 };
 
 // shoppingListItems
-export const shoppingListItem = async (id: string): Promise<ShoppingListItemDetail> => {
+export const shoppingListItem = async (
+  id: string
+): Promise<ShoppingListItemDetail> => {
   try {
     const response = await api.get(`/shopping_list_items/${id}`);
     return response.data;
@@ -136,19 +149,16 @@ export const shoppingListItem = async (id: string): Promise<ShoppingListItemDeta
     });
     throw error;
   }
-}
+};
 
 export const createShoppingListItem = async (
   createShoppingListItemRequest: createShoppingListItemRequest
 ): Promise<ShoppingListDetail> => {
   try {
-    const response = await api.post(
-      `/shopping_list_items/`,
-      {
-        item_id: createShoppingListItemRequest.itemId,
-        shopping_list_id: createShoppingListItemRequest.shoppingListId,
-      }
-    );
+    const response = await api.post(`/shopping_list_items/`, {
+      item_id: createShoppingListItemRequest.itemId,
+      shopping_list_id: createShoppingListItemRequest.shoppingListId,
+    });
     return response.data;
   } catch (error) {
     console.error("Errore in createShoppingListItem:", {
@@ -156,5 +166,36 @@ export const createShoppingListItem = async (
     });
     throw error;
   }
-}
+};
 
+export const updateShoppingListItem = async (
+  itemId: number,
+  updateShoppingListItemRequest: UpdateShoppingListItemRequest
+): Promise<ShoppingListItemDetail> => {
+  try {
+    const response = await api.put(`/shopping_list_items/${itemId}/`, {
+      // id: itemId,
+      ...updateShoppingListItemRequest
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Errore in updateShoppingListItem:", {
+      error,
+    });
+    throw error;
+  }
+};
+
+export const deleteShoppingListItem = async (
+  itemId: number
+): Promise<any> => {
+  try {
+    const response = await api.delete(`/shopping_list_items/${itemId}/`);
+    return response.data;
+  } catch (error) {
+    console.error("Errore in deleteShoppingListItem:", {
+      error,
+    });
+    throw error;
+  }
+}
