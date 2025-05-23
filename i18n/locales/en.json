@@ -13,7 +13,9 @@
       "enterName": "Enter a name",
       "enterDescription": "Enter a description",
       "searchText": "Search",
-      "quantity": "Quantity"
+      "quantity": "Quantity",
+      "startShopping": "Start shopping",
+      "backToList": "Back to list"
     },
     "is_edible": {
       "label": "Edibility",

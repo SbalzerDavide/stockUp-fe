@@ -13,7 +13,9 @@
       "enterName": "Inserisci un nome",
       "enterDescription": "Inserisci una descrizione",
       "searchText": "Cerca",
-      "quantity": "Quantità"
+      "quantity": "Quantità",
+      "startShopping": "Inizia spesa",
+      "backToList": "Torna alla lista"
     },
     "is_edible": {
       "label": "Edibilità",
