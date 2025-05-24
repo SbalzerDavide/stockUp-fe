@@ -5,7 +5,9 @@
       "newShoppingList": "Nuova Lista di Shopping",
       "save": "Salva",
       "cancel": "Annulla",
-      "delete": "Elimina"
+      "delete": "Elimina",
+      "startShopping": "Inizia spesa",
+      "backToList": "Torna alla lista"
     },
     "labels": {
       "name": "Nome",
@@ -13,9 +15,7 @@
       "enterName": "Inserisci un nome",
       "enterDescription": "Inserisci una descrizione",
       "searchText": "Cerca",
-      "quantity": "Quantità",
-      "startShopping": "Inizia spesa",
-      "backToList": "Torna alla lista"
+      "quantity": "Quantità"
     },
     "is_edible": {
       "label": "Edibilità",

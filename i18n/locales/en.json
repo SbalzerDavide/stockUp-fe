@@ -5,7 +5,9 @@
       "newShoppingList": "New Shopping List",
       "save": "Save",
       "cancel": "Cancel",
-      "delete": "Delete"
+      "delete": "Delete",
+      "startShopping": "Start shopping",
+      "backToList": "Back to list"
     },
     "labels": {
       "name": "Name",
@@ -13,9 +15,7 @@
       "enterName": "Enter a name",
       "enterDescription": "Enter a description",
       "searchText": "Search",
-      "quantity": "Quantity",
-      "startShopping": "Start shopping",
-      "backToList": "Back to list"
+      "quantity": "Quantity"
     },
     "is_edible": {
       "label": "Edibility",
