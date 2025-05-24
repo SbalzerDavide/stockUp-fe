@@ -9,6 +9,7 @@ import {
   CheckIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  Plus,
   ShoppingCart,
   TableOfContents,
 } from "lucide-react-native";
@@ -96,13 +97,6 @@ export default function ShoppingListDetailScreen() {
     null
   );
 
-  const [checkedItems, setCheckedItems] = useState<any>(
-    departments.map(() => ({
-    checkedItems: [],
-  }
-)));
-
-
   const { data: macronutriments } = useMacronutriments();
   const { data: itemCategories } = useItemCategories();
 
@@ -160,7 +154,6 @@ export default function ShoppingListDetailScreen() {
     department?: string;
     items?: any[];
     total?: number;
-    checkedItems: string[];
   }[] => {
     return departments.map((department) => {
       const itemsByDepartment = shoppingList?.items?.filter(
@@ -170,7 +163,6 @@ export default function ShoppingListDetailScreen() {
         department: department,
         items: itemsByDepartment,
         total: itemsByDepartment?.length,
-        checkedItems: [],
       };
     });
   };
@@ -257,28 +249,52 @@ export default function ShoppingListDetailScreen() {
     );
   };
 
+  const [checkedItems, setCheckedItems] = useState<{
+    [key: string]: string[];
+  } | null>(null);
+
+  const totalCheckedItems = () => {
+    let total = 0;
+    if (checkedItems) {
+      for (const [key, value] of Object.entries(checkedItems)) {
+        total += value.length;
+      }
+    }
+    return total;
+  };
+
+  useEffect(() => {
+    const initialCheckedItems = departments.reduce(
+      (el: Record<string, string[]>, item) => {
+        el[item] = [];
+        return el;
+      },
+      {}
+    );
+    setCheckedItems(initialCheckedItems);
+  }, [departments]);
+
   const toggleCheckedItem = (
-    departmentIndex: number,
+    department: string,
     itemId: string,
     value: boolean
   ) => {
-    const updatedItems = itemsByDepartment()[departmentIndex].checkedItems;
-    console.log(updatedItems);
-    console.log(value);
-    
-    
-    if(value) {
-      itemsByDepartment()[departmentIndex].checkedItems.push(itemId);
-      console.log(itemsByDepartment()[departmentIndex].checkedItems);
-      
-    } else{
-      if (updatedItems.includes(itemId)) {
-        const index = updatedItems.indexOf(itemId);
+    const updatedCheckedItems = { ...checkedItems };
+    const departmentCheckedItems = updatedCheckedItems[department] || [];
+    if (value) {
+      departmentCheckedItems.push(itemId);
+    } else {
+      if (departmentCheckedItems.includes(itemId)) {
+        const index = departmentCheckedItems.indexOf(itemId);
         if (index > -1) {
-          itemsByDepartment()[departmentIndex].checkedItems.splice(index, 1);
+          departmentCheckedItems.splice(index, 1);
         }
       }
     }
+    setCheckedItems({
+      ...updatedCheckedItems,
+      [department]: departmentCheckedItems,
+    });
   };
 
   const handleCreateItem = async () => {
@@ -313,12 +329,23 @@ export default function ShoppingListDetailScreen() {
         options={{
           title: shoppingList?.name,
           headerBackVisible: true,
-          // headerRight: () => <Pressable
-          //   onPress={() => router.push(`/(tabs)/shoppingLists/detail/${id}/newShoppingListItem`)}
-          //   className="p-5 bg-primary-500"
-          // >
-          //   <Plus />
-          // </Pressable>,
+          headerRight: () =>
+            isInShopping && (
+              <>
+                <Box className="flex flex-row items-center p-2 gap-2">
+                  <Text className="text-xl">
+                    {totalCheckedItems()}({listItems().length})
+                  </Text>
+                  {/* TODO - go to add element */}
+                  <Pressable
+                    // onPress={}
+                    className="bg-primary-500 rounded-lg h-10 w-10 flex items-center justify-center"
+                  >
+                    <Plus />
+                  </Pressable>
+                </Box>
+              </>
+            ),
         }}
       />
       <ThemedView className="flex-col gap-4 h-full p-4">
@@ -434,32 +461,42 @@ export default function ShoppingListDetailScreen() {
                 type="multiple"
                 isCollapsible={true}
                 isDisabled={false}
-                className="m-5 w-[90%] border border-outline-200"
+                className="m-5 w-[90%] border border-background-800 rounded-lg"
               >
                 {itemsByDepartment()?.map((department, index) => (
                   <>
                     {department?.items && department.items?.length > 0 && (
                       <>
-                        <AccordionItem value={index.toString()}>
+                        <AccordionItem key={index} value={index.toString()} className="!bg-background-900">
                           <AccordionHeader>
                             <AccordionTrigger>
                               {({ isExpanded }) => {
                                 return (
                                   <>
-                                    <AccordionTitleText>
+                                    <AccordionTitleText className="flex flex-row items-center justify-between text-white">                                      
                                       {department.department} (
-                                      {department.checkedItems.length}/
-                                      {department.total})
+                                      {
+                                        checkedItems?.[department.department!]
+                                          .length
+                                      }
+                                      /{department.total})
+                                      {/* TODO - go to add element, with department */}
+                                      <Pressable
+                                        // onPress={}
+                                        className="bg-primary-500 rounded-lg h-10 w-10 flex items-center justify-center"
+                                      >
+                                        <Plus />
+                                      </Pressable>
                                     </AccordionTitleText>
                                     {isExpanded ? (
                                       <AccordionIcon
                                         as={ChevronUpIcon}
-                                        className="ml-3"
+                                        className="ml-3 text-white"
                                       />
                                     ) : (
                                       <AccordionIcon
                                         as={ChevronDownIcon}
-                                        className="ml-3"
+                                        className="ml-3 text-white"
                                       />
                                     )}
                                   </>
@@ -472,11 +509,16 @@ export default function ShoppingListDetailScreen() {
                               {department.items?.map((item) => (
                                 <Checkbox
                                   size="md"
+                                  key={item.id}
                                   isInvalid={false}
                                   isDisabled={false}
                                   value={""}
                                   onChange={(value) => {
-                                    toggleCheckedItem(index, item.id, value);
+                                    toggleCheckedItem(
+                                      item.department,
+                                      item.id,
+                                      value
+                                    );
                                   }}
                                 >
                                   <CheckboxIndicator>
@@ -490,7 +532,7 @@ export default function ShoppingListDetailScreen() {
                             </Box>
                           </AccordionContent>
                         </AccordionItem>
-                        <Divider />
+                        <Divider className="bg-background-800"/>
                       </>
                     )}
                   </>
@@ -510,12 +552,12 @@ export default function ShoppingListDetailScreen() {
           {isInShopping ? (
             <>
               <FabIcon as={TableOfContents} />
-              <FabLabel>Torna alla lista</FabLabel>
+              <FabLabel>{t("common.buttons.backToList")}</FabLabel>
             </>
           ) : (
             <>
               <FabIcon as={ShoppingCart} />
-              <FabLabel>Inizia spesa</FabLabel>
+              <FabLabel>{t("common.buttons.startShopping")}</FabLabel>
             </>
           )}
         </Fab>
