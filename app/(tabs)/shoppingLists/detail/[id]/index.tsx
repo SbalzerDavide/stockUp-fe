@@ -459,6 +459,7 @@ export default function ShoppingListDetailScreen() {
                 size="sm"
                 variant="filled"
                 type="multiple"
+                defaultValue={itemsByDepartment()?.map((_, index) => index.toString())}
                 isCollapsible={true}
                 isDisabled={false}
                 className="m-5 w-[90%] border border-background-800 rounded-lg"
@@ -524,7 +525,7 @@ export default function ShoppingListDetailScreen() {
                                   <CheckboxIndicator>
                                     <CheckboxIcon as={CheckIcon} />
                                   </CheckboxIndicator>
-                                  <CheckboxLabel>
+                                  <CheckboxLabel className="!data-[checked=true]:text-white pippo">
                                     {item.item_name} ({item.quantity})
                                   </CheckboxLabel>
                                 </Checkbox>
