@@ -316,10 +316,13 @@ export default function ShoppingListDetailScreen() {
     );
   };
 
-  const confirmShoppingList = () => {
+  const saveShoppingList = () => {
     console.log("Confirm shopping list with checked items:", checkedItems);
-    
-  }
+  };
+
+  const dontSaveShoppingList = () => {
+    console.log("Don't save shopping list");
+  };
 
   return (
     <>
@@ -567,7 +570,10 @@ export default function ShoppingListDetailScreen() {
           )}
         </Fab>
         {isInShopping && (
-          <FabConfirmShopping onPress={()=> confirmShoppingList()}></FabConfirmShopping>
+          <FabConfirmShopping
+            onSave={() => saveShoppingList()}
+            onDontSave={() => dontSaveShoppingList()}
+          ></FabConfirmShopping>
         )}
       </ThemedView>
       <Actionsheet isOpen={showActionsheet} onClose={handleClose}>

@@ -11,22 +11,40 @@ import React from "react";
 
 interface FabConfirmShoppingProps {
   title?: string;
-  onPress?: () => void;
+  onSave?: () => void;
+  onDontSave?: () => void;
 }
 
 export function FabConfirmShopping({
   title,
-  onPress,
+  onSave,
+  onDontSave
 }: FabConfirmShoppingProps) {
   const { t } = useTranslation();
 
   const [showAlertDialog, setShowAlertDialog] = React.useState(false)
   const handleClose = () => setShowAlertDialog(false)
 
-  const confirmShoppingList = () => {
-    if (onPress) {
-      onPress();
+  const saveShoppingList = () => {
+    if (onSave) {
+      onSave();
     }
+  };
+
+  const dontSaveShoppingList = () => {
+    if (onDontSave) {
+      onDontSave();
+    }
+  };
+
+  const handleSave = () => {
+    setShowAlertDialog(false);
+    saveShoppingList();
+  };
+
+  const handleDontSave = () => {
+    setShowAlertDialog(false);
+    dontSaveShoppingList();
   };
 
   return (
@@ -61,12 +79,12 @@ export function FabConfirmShopping({
             <Button
               variant="outline"
               action="secondary"
-              onPress={handleClose}
+              onPress={handleDontSave}
               size="sm"
             >
               <ButtonText>{t("common.buttons.cancel")}</ButtonText>
             </Button>
-            <Button size="sm" onPress={confirmShoppingList}>
+            <Button size="sm" onPress={handleSave}>
               <ButtonText>{t("common.buttons.save")}</ButtonText>
             </Button>
           </AlertDialogFooter>
