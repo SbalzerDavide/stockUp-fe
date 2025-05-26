@@ -38,6 +38,14 @@ export default function Index() {
     {
       elements: [
         {
+          title: "Purchases",
+          link: "/(tabs)/purchases",
+        },
+      ],
+    },
+    {
+      elements: [
+        {
           title: "Macronutriments",
           link: "/(tabs)/more/macronutriments",
         },

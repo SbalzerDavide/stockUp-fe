@@ -21,7 +21,7 @@ export default function ShoppingListScreen() {
           headerTitle: "Shopping lists",
           headerRight: () => (
             <Pressable
-              onPress={() => router.push("/(tabs)/shoppingLists/NewShoppingList")}
+              // onPress={() => router.push("/(tabs)/shoppingLists/NewShoppingList")}
               className="p-5 bg-primary-500"
             >
               <Plus />

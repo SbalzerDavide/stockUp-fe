@@ -6,7 +6,13 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import * as Linking from "expo-linking";
 import { Icon } from "@/components/ui/icon";
 
-import { Home, User, ShoppingCart, EllipsisVertical, AlignEndVertical } from "lucide-react-native";
+import {
+  Home,
+  User,
+  ShoppingCart,
+  EllipsisVertical,
+  AlignEndVertical,
+} from "lucide-react-native";
 
 let defaultTheme: "dark" | "light" = "light";
 
@@ -84,6 +90,12 @@ export default function TabsLayout() {
                 <Icon as={EllipsisVertical} size={"sm"} color={color} />
               ),
               // presentation: "modal",
+            }}
+          />
+          <Tabs.Screen
+            name="purchases"
+            options={{
+              href: null,
             }}
           />
         </Tabs>
