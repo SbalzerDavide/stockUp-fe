@@ -6,8 +6,9 @@
       "save": "Save",
       "cancel": "Cancel",
       "delete": "Delete",
-      "startShopping": "Start shopping",
-      "backToList": "Back to list"
+      "startShopping": "Shopping",
+      "backToList": "Back to list",
+      "confirmShoppingList": "Confirm"
     },
     "labels": {
       "name": "Name",
@@ -21,6 +22,12 @@
       "label": "Edibility",
       "yes": "Edibile",
       "no": "Not edibile"
+    },
+    "confirm": {
+      "saveShoppingList": {
+        "title": "Are you sure you want to save this shopping list?",
+        "message": "If you save it, you will use it another time. If you don't, you will lose it."
+      }
     },
     "macronutriments": "Macronutriments",
     "categories": "Categories"
