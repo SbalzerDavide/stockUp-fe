@@ -1,9 +1,6 @@
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 
-import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ItemCard } from "@/features/shoppingList/components/ItemCard";
-import { Switch } from "@/components/ui/switch";
-import colors from "tailwindcss/colors";
 import { Text } from "@/components/ui/text";
 import {
   CheckIcon,
@@ -24,14 +21,11 @@ import {
   useShoppingList,
 } from "@/features/shoppingList/api/shoppingList.mutations";
 
-import { AddIcon } from "@/components/ui/icon";
-
 import { VStack } from "@/components/ui/vstack";
 import { Box } from "@/components/ui/box";
 import { useState } from "react";
 import { debounce } from "lodash";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { ListFilter, Icon } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { Input, InputField } from "@/components/ui/input";
 
@@ -54,7 +48,6 @@ import { departments } from "@/assets/mock/departments";
 import {
   Accordion,
   AccordionContent,
-  AccordionContentText,
   AccordionHeader,
   AccordionIcon,
   AccordionItem,
@@ -68,6 +61,7 @@ import {
   CheckboxIndicator,
   CheckboxLabel,
 } from "@/components/ui/checkbox";
+import { FabConfirmShopping } from "@/features/shoppingList/components/fabConfirmShopping";
 
 interface Filter {
   id: string;
@@ -86,7 +80,6 @@ export default function ShoppingListDetailScreen() {
 
   const color = useThemeColor({}, "text");
 
-  const [isEdible, setIsEdible] = useState(true);
   const [isInShopping, setIsInShopping] = useState(false);
   const [showActionsheet, setShowActionsheet] = useState(false);
   const [inputText, setInputText] = useState("");
@@ -323,6 +316,11 @@ export default function ShoppingListDetailScreen() {
     );
   };
 
+  const confirmShoppingList = () => {
+    console.log("Confirm shopping list with checked items:", checkedItems);
+    
+  }
+
   return (
     <>
       <Stack.Screen
@@ -348,7 +346,7 @@ export default function ShoppingListDetailScreen() {
             ),
         }}
       />
-      <ThemedView className="flex-col gap-4 h-full p-4">
+      <ThemedView className="flex-col gap-4 h-full p-4 pb-13">
         <ScrollView>
           {!isInShopping && (
             <Box className="w-full p-4">
@@ -459,7 +457,9 @@ export default function ShoppingListDetailScreen() {
                 size="sm"
                 variant="filled"
                 type="multiple"
-                defaultValue={itemsByDepartment()?.map((_, index) => index.toString())}
+                defaultValue={itemsByDepartment()?.map((_, index) =>
+                  index.toString()
+                )}
                 isCollapsible={true}
                 isDisabled={false}
                 className="m-5 w-[90%] border border-background-800 rounded-lg"
@@ -468,13 +468,17 @@ export default function ShoppingListDetailScreen() {
                   <>
                     {department?.items && department.items?.length > 0 && (
                       <>
-                        <AccordionItem key={index} value={index.toString()} className="!bg-background-900">
+                        <AccordionItem
+                          key={index}
+                          value={index.toString()}
+                          className="!bg-background-900"
+                        >
                           <AccordionHeader>
                             <AccordionTrigger>
                               {({ isExpanded }) => {
                                 return (
                                   <>
-                                    <AccordionTitleText className="flex flex-row items-center justify-between text-white">                                      
+                                    <AccordionTitleText className="flex flex-row items-center justify-between text-white">
                                       {department.department} (
                                       {
                                         checkedItems?.[department.department!]
@@ -533,7 +537,7 @@ export default function ShoppingListDetailScreen() {
                             </Box>
                           </AccordionContent>
                         </AccordionItem>
-                        <Divider className="bg-background-800"/>
+                        <Divider className="bg-background-800" />
                       </>
                     )}
                   </>
@@ -544,7 +548,7 @@ export default function ShoppingListDetailScreen() {
         </ScrollView>
         <Fab
           size="md"
-          placement="bottom right"
+          placement="bottom left"
           isHovered={false}
           isDisabled={false}
           isPressed={false}
@@ -562,6 +566,9 @@ export default function ShoppingListDetailScreen() {
             </>
           )}
         </Fab>
+        {isInShopping && (
+          <FabConfirmShopping onPress={()=> confirmShoppingList()}></FabConfirmShopping>
+        )}
       </ThemedView>
       <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
         <ActionsheetBackdrop />
