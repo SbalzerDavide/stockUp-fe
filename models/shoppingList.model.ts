@@ -41,35 +41,41 @@ export interface ShoppingListDetail {
 }
 
 export interface ShoppingListItemDetail {
+  id: number;
+  item: Item;
+  item_id: number;
+  shopping_list_id: number;
+  shopping_list: {
     id: number;
-    item: Item;
-    item_id: number;
-    shopping_list_id: number;
-    shopping_list: {
-        id: number;
-        name: string;
-    },
-    is_checked: boolean;
-    is_proposed: boolean;
-    quantity: number;
-    volume: number | null,
-    weight: number | null,
-    unit_volume: string | null,
-    unit_weight: string | null,
-    created_at: string;
-    updated_at: string;
+    name: string;
+  };
+  is_checked: boolean;
+  is_proposed: boolean;
+  quantity: number;
+  volume: number | null;
+  weight: number | null;
+  unit_volume: string | null;
+  unit_weight: string | null;
+  created_at: string;
+  updated_at: string;
 }
-
 
 export interface createShoppingListRequest {
   name: string;
   description?: string;
 }
 
+export interface UpdateShoppingListRequest {
+  name?: string;
+  description?: string;
+  is_active?: boolean;
+  is_purchased?: boolean;
+}
+
 export interface createShoppingListItemRequest {
-  shoppingListId: string,
-  itemId: string
-} 
+  shoppingListId: string;
+  itemId: string;
+}
 
 export interface UpdateShoppingListItemRequest {
   is_checked?: boolean;
@@ -79,5 +85,8 @@ export interface UpdateShoppingListItemRequest {
   unit_weight?: string;
   volume?: number;
   unit_volume?: string;
+}
 
+export interface ShoppingListQueryParams {
+  is_active?: boolean;
 }
