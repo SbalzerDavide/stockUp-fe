@@ -551,11 +551,10 @@ export default function ShoppingListDetailScreen() {
                 className="m-5 w-[90%] border border-background-800 rounded-lg"
               >
                 {itemsByDepartment()?.map((department, index) => (
-                  <>
+                  <React.Fragment key={index}>
                     {department?.items && department.items?.length > 0 && (
                       <>
                         <AccordionItem
-                          key={index}
                           value={index.toString()}
                           className="!bg-background-900"
                         >
@@ -624,10 +623,11 @@ export default function ShoppingListDetailScreen() {
                             </Box>
                           </AccordionContent>
                         </AccordionItem>
-                        <Divider className="bg-background-800" />
+                        <Divider 
+                          className="bg-background-800" />
                       </>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
               </Accordion>
             </>
