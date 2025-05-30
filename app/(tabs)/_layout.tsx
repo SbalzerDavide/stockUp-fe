@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tabs } from "expo-router";
 
 import "@/global.css";
@@ -31,14 +31,14 @@ export const ThemeContext = React.createContext<ThemeContextType>({
 });
 
 export default function TabsLayout() {
-  const [colorMode, setColorMode] = React.useState<"dark" | "light">(
+  const [colorMode, setColorMode] = useState<"dark" | "light">(
     defaultTheme
   );
 
   const toggleColorMode = async () => {
     setColorMode((prev) => (prev === "light" ? "dark" : "light"));
   };
-  const [activeTab, setActiveTab] = React.useState("Home");
+  const [activeTab, setActiveTab] = useState("Home");
 
   return (
     <>
