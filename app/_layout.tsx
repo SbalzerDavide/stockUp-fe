@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import "@/global.css";
@@ -35,7 +35,7 @@ export const ThemeContext = React.createContext<ThemeContextType>({
 });
 
 function RootLayoutNav() {
-  const [colorMode, setColorMode] = React.useState<"dark" | "light">(defaultTheme);
+  const [colorMode, setColorMode] = useState<"dark" | "light">(defaultTheme);
   const { token } = useAuth();
 
   const toggleColorMode = async () => {
