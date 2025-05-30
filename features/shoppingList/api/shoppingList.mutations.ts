@@ -12,13 +12,16 @@ import {
   shoppingListItem,
   updateShoppingListItem,
   deleteShoppingListItem,
+  updateShoppingList,
 } from "./shoppingList-api-client";
 import { createItemRequest, ItemsQueryParams } from "@/models/items.model";
 import { useShowToast } from "@/hooks/useShowToast";
 import {
   createShoppingListItemRequest,
   createShoppingListRequest,
+  ShoppingListQueryParams,
   UpdateShoppingListItemRequest,
+  UpdateShoppingListRequest,
 } from "@/models/shoppingList.model";
 
 // Chiave per la query degli items
@@ -26,10 +29,10 @@ export const ITEMS_QUERY_KEY = ["items"] as const;
 
 // shoppingList
 // index
-export function useShoppingLists() {
+export function useShoppingLists(params: ShoppingListQueryParams) {
   return useQuery({
-    queryKey: ["shoppingLists"],
-    queryFn: () => getShoppingLists(),
+    queryKey: ["shoppingLists", params],
+    queryFn: () => getShoppingLists(params),
   });
 }
 
@@ -61,6 +64,33 @@ export function useCreateShoppingList() {
     },
   });
 }
+// update
+export function useUpdateShoppingList() {
+  const showToast = useShowToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (request: {
+      itemId: string;
+      updateShoppingListRequest: UpdateShoppingListRequest;
+    }) =>
+      updateShoppingList(
+        request.itemId,
+        request.updateShoppingListRequest
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shoppingListItems"] });
+    },
+    onError: (error) => {
+      showToast({
+        titleKey: "toasts.error.title",
+        descriptionKey: "toasts.error.createFailed",
+        action: "error",
+      });
+    },
+  });
+}
+
 
 // items
 export function useItems(params: ItemsQueryParams) {
