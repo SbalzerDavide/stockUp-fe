@@ -23,10 +23,19 @@
       "yes": "Edibile",
       "no": "Not edibile"
     },
+    "is_active": {
+      "label": "Active",
+      "yes": "Active",
+      "no": "Inactive"
+    },
     "confirm": {
       "saveShoppingList": {
         "title": "Are you sure you want to save this shopping list?",
         "message": "If you save it, you will use it another time. If you don't, you will lose it."
+      },
+      "createPurchase": {
+        "title": "Purchase creation",
+        "message": "Fill the fileds below to create a new purchase."
       }
     },
     "macronutriments": "Macronutriments",
@@ -49,6 +58,17 @@
     },
     "newShoppingList": {
       "title": "Add new shopping list"
+    }
+  },
+  "purchase": {
+    "form": {
+      "totalCost": {
+        "placeholder": "Insert total cost"
+      },
+      "store": {
+        "placeholder": "Insert store name"
+      }
+
     }
   }
 } 
