@@ -7,6 +7,10 @@ export default function ShoppingListsLayoutScreen() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen
           name="index"
+          options={{
+            headerShown: true,
+          }}
+
         />
         <Stack.Screen
           name="newShoppingList"
