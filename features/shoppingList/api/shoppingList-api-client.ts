@@ -15,17 +15,23 @@ import {
   ShoppingListItem,
   ShoppingListItemDetail,
   UpdateShoppingListItemRequest,
+  UpdateShoppingListRequest,
+  ShoppingListQueryParams,
 } from "@/models/shoppingList.model";
 
 // shoppingLists
-export const getShoppingLists = async (): Promise<{
+export const getShoppingLists = async (
+  params: ShoppingListQueryParams
+): Promise<{
   count: number;
   next: string | null;
   previous: string | null;
   results: ShoppingList[];
 }> => {
   try {
-    const response = await api.get("/shopping-lists/");
+    const response = await api.get("/shopping-lists/", {
+      params,
+    });
     return response.data;
   } catch (error) {
     console.error("Errore in getShoppingLists:", {
@@ -57,6 +63,21 @@ export const createShoppingList = async (
     return response.data;
   } catch (error) {
     console.error("Errore in createShoppingList:", {
+      error,
+    });
+    throw error;
+  }
+};
+
+export const updateShoppingList = async (
+  id: string,
+  shoppingList: UpdateShoppingListRequest
+): Promise<ShoppingList> => {
+  try {
+    const response = await api.put(`/shopping-lists/${id}/`, shoppingList);
+    return response.data;
+  } catch (error) {
+    console.error("Errore in updateShoppingList:", {
       error,
     });
     throw error;
@@ -175,7 +196,7 @@ export const updateShoppingListItem = async (
   try {
     const response = await api.put(`/shopping_list_items/${itemId}/`, {
       // id: itemId,
-      ...updateShoppingListItemRequest
+      ...updateShoppingListItemRequest,
     });
     return response.data;
   } catch (error) {
@@ -186,9 +207,7 @@ export const updateShoppingListItem = async (
   }
 };
 
-export const deleteShoppingListItem = async (
-  itemId: number
-): Promise<any> => {
+export const deleteShoppingListItem = async (itemId: number): Promise<any> => {
   try {
     const response = await api.delete(`/shopping_list_items/${itemId}/`);
     return response.data;
@@ -198,4 +217,4 @@ export const deleteShoppingListItem = async (
     });
     throw error;
   }
-}
+};
