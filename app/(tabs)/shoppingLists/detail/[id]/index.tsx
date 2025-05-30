@@ -14,11 +14,13 @@ import {
 import React, { useCallback, useEffect } from "react";
 import {
   useCreateItem,
+  useCreateShoppingList,
   useCreateShoppingListItem,
   useItemCategories,
   useItems,
   useMacronutriments,
   useShoppingList,
+  useUpdateShoppingList,
 } from "@/features/shoppingList/api/shoppingList.mutations";
 
 import { VStack } from "@/components/ui/vstack";
@@ -62,6 +64,7 @@ import {
   CheckboxLabel,
 } from "@/components/ui/checkbox";
 import { FabConfirmShopping } from "@/features/shoppingList/components/fabConfirmShopping";
+import { useCreatePurchase } from "@/features/purchase/api/purchase.mutations";
 
 interface Filter {
   id: string;
@@ -213,6 +216,9 @@ export default function ShoppingListDetailScreen() {
     isSuccess: isSuccessShoppingListItem,
   } = useCreateShoppingListItem();
   const { mutate: createItem, isPending, isSuccess } = useCreateItem();
+
+  const { mutate: createPurchase } = useCreatePurchase();
+  
   const showToast = useShowToast();
 
   const handleCreateShoppingListItem = async (itemId: string) => {
@@ -242,14 +248,14 @@ export default function ShoppingListDetailScreen() {
     );
   };
 
-  const [checkedItems, setCheckedItems] = useState<{
+  const [checkedItemsGrouped, setCheckedItemsGrouped] = useState<{
     [key: string]: string[];
   } | null>(null);
 
   const totalCheckedItems = () => {
     let total = 0;
-    if (checkedItems) {
-      for (const [key, value] of Object.entries(checkedItems)) {
+    if (checkedItemsGrouped) {
+      for (const [key, value] of Object.entries(checkedItemsGrouped)) {
         total += value.length;
       }
     }
@@ -264,7 +270,7 @@ export default function ShoppingListDetailScreen() {
       },
       {}
     );
-    setCheckedItems(initialCheckedItems);
+    setCheckedItemsGrouped(initialCheckedItems);
   }, [departments]);
 
   const toggleCheckedItem = (
@@ -272,7 +278,7 @@ export default function ShoppingListDetailScreen() {
     itemId: string,
     value: boolean
   ) => {
-    const updatedCheckedItems = { ...checkedItems };
+    const updatedCheckedItems = { ...checkedItemsGrouped };
     const departmentCheckedItems = updatedCheckedItems[department] || [];
     if (value) {
       departmentCheckedItems.push(itemId);
@@ -284,7 +290,7 @@ export default function ShoppingListDetailScreen() {
         }
       }
     }
-    setCheckedItems({
+    setCheckedItemsGrouped({
       ...updatedCheckedItems,
       [department]: departmentCheckedItems,
     });
@@ -316,12 +322,89 @@ export default function ShoppingListDetailScreen() {
     );
   };
 
+  const {
+    mutate: updateShoppingList,
+    isPending: isPendingUpdateShoppingList,
+    isSuccess: isSuccessUpdateShoppingList,
+  } = useUpdateShoppingList();
+
+  const {
+    mutate: createShoppingList,
+    isPending: isPendingCreateShoppingList,
+    isSuccess: isSuccessCreateShoppingList,
+  } = useCreateShoppingList();
+
   const saveShoppingList = () => {
-    console.log("Confirm shopping list with checked items:", checkedItems);
+    const checkedItems: string[] = [];
+    for (const [department, items] of Object.entries(
+      checkedItemsGrouped || {}
+    )) {
+      items.forEach((itemId) => {
+        checkedItems.push(itemId);
+      });
+    }
+    console.log(checkedItems);
+    console.log(shoppingList?.items);
+    if (checkedItems.length === shoppingList?.items.length) {
+      // check all items in shopping list -> is not necessary to change it
+      // create purchase
+      console.log("All items are checked, no need to save shopping list");
+    } else {
+      // set is_active to false for original shopping list
+      console.log("Saving shopping list with checked items");
+
+      updateShoppingList({
+        itemId: shoppingList!.id as string,
+        updateShoppingListRequest: {
+          is_active: false,
+        },
+      });
+      createShoppingList(
+        {
+          name: shoppingList?.name + "_1" || "New Shopping List",
+        },
+        {
+          onSuccess: (data) => {
+            showToast({
+              titleKey: "toasts.success.title",
+              descriptionKey: "toasts.success.itemCreated",
+              action: "success",
+            });
+            // add all checked items to new shopping list
+            checkedItems.forEach((itemId) => {
+              createShoppingListitem({
+                shoppingListId: data.id as string,
+                itemId: itemId.toString(),
+              });
+            });
+          },
+          onError: () => {
+            showToast({
+              titleKey: "toasts.error.title",
+              descriptionKey: "toasts.error.createFailed",
+              action: "error",
+            });
+          },
+        }
+      );
+    }
   };
 
   const dontSaveShoppingList = () => {
-    console.log("Don't save shopping list");
+    updateShoppingList({
+      itemId: shoppingList!.id as string,
+      updateShoppingListRequest: {
+        is_active: false,
+      },
+    });
+  };
+
+  const handleCreatePurchase = (total_cost: number) => {
+    createPurchase({
+      total_cost,
+      // inssert store dynamically
+      store: 'Esselunga'
+    })
   };
 
   return (
@@ -484,8 +567,9 @@ export default function ShoppingListDetailScreen() {
                                     <AccordionTitleText className="flex flex-row items-center justify-between text-white">
                                       {department.department} (
                                       {
-                                        checkedItems?.[department.department!]
-                                          .length
+                                        checkedItemsGrouped?.[
+                                          department.department!
+                                        ].length
                                       }
                                       /{department.total})
                                       {/* TODO - go to add element, with department */}
@@ -573,6 +657,7 @@ export default function ShoppingListDetailScreen() {
           <FabConfirmShopping
             onSave={() => saveShoppingList()}
             onDontSave={() => dontSaveShoppingList()}
+            onCreatePurchase={(total_cost) => handleCreatePurchase(total_cost)}
           ></FabConfirmShopping>
         )}
       </ThemedView>
