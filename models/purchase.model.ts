@@ -1,4 +1,5 @@
 export interface PurchaseRequest {
+  shopping_list_id: number;
   total_cost: number;
   total_items?: number;
   store?: string;
