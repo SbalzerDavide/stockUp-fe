@@ -218,7 +218,7 @@ export default function ShoppingListDetailScreen() {
   const { mutate: createItem, isPending, isSuccess } = useCreateItem();
 
   const { mutate: createPurchase } = useCreatePurchase();
-  
+
   const showToast = useShowToast();
 
   const handleCreateShoppingListItem = async (itemId: string) => {
@@ -334,7 +334,7 @@ export default function ShoppingListDetailScreen() {
     isSuccess: isSuccessCreateShoppingList,
   } = useCreateShoppingList();
 
-  const saveShoppingList = () => {
+  const checkedItems = () => {
     const checkedItems: string[] = [];
     for (const [department, items] of Object.entries(
       checkedItemsGrouped || {}
@@ -343,51 +343,44 @@ export default function ShoppingListDetailScreen() {
         checkedItems.push(itemId);
       });
     }
-    console.log(checkedItems);
-    console.log(shoppingList?.items);
-    if (checkedItems.length === shoppingList?.items.length) {
-      // check all items in shopping list -> is not necessary to change it
-      // create purchase
-      console.log("All items are checked, no need to save shopping list");
-    } else {
-      // set is_active to false for original shopping list
-      console.log("Saving shopping list with checked items");
+    return checkedItems;
+  };
 
-      updateShoppingList({
-        itemId: shoppingList!.id as string,
-        updateShoppingListRequest: {
-          is_active: false,
+  const saveShoppingList = () => {
+    updateShoppingList({
+      itemId: shoppingList!.id as string,
+      updateShoppingListRequest: {
+        is_active: false,
+      },
+    });
+    createShoppingList(
+      {
+        name: shoppingList?.name + "_1" || "New Shopping List",
+      },
+      {
+        onSuccess: (data) => {
+          showToast({
+            titleKey: "toasts.success.title",
+            descriptionKey: "toasts.success.itemCreated",
+            action: "success",
+          });
+          // add all checked items to new shopping list
+          checkedItems().forEach((itemId) => {
+            createShoppingListitem({
+              shoppingListId: data.id as string,
+              itemId: itemId.toString(),
+            });
+          });
         },
-      });
-      createShoppingList(
-        {
-          name: shoppingList?.name + "_1" || "New Shopping List",
+        onError: () => {
+          showToast({
+            titleKey: "toasts.error.title",
+            descriptionKey: "toasts.error.createFailed",
+            action: "error",
+          });
         },
-        {
-          onSuccess: (data) => {
-            showToast({
-              titleKey: "toasts.success.title",
-              descriptionKey: "toasts.success.itemCreated",
-              action: "success",
-            });
-            // add all checked items to new shopping list
-            checkedItems.forEach((itemId) => {
-              createShoppingListitem({
-                shoppingListId: data.id as string,
-                itemId: itemId.toString(),
-              });
-            });
-          },
-          onError: () => {
-            showToast({
-              titleKey: "toasts.error.title",
-              descriptionKey: "toasts.error.createFailed",
-              action: "error",
-            });
-          },
-        }
-      );
-    }
+      }
+    );
   };
 
   const dontSaveShoppingList = () => {
@@ -401,10 +394,11 @@ export default function ShoppingListDetailScreen() {
 
   const handleCreatePurchase = (total_cost: number) => {
     createPurchase({
+      shopping_list_id: parseInt(shoppingList!.id),
       total_cost,
       // inssert store dynamically
-      store: 'Esselunga'
-    })
+      store: "Esselunga",
+    });
   };
 
   return (
@@ -623,8 +617,7 @@ export default function ShoppingListDetailScreen() {
                             </Box>
                           </AccordionContent>
                         </AccordionItem>
-                        <Divider 
-                          className="bg-background-800" />
+                        <Divider className="bg-background-800" />
                       </>
                     )}
                   </React.Fragment>
@@ -655,6 +648,9 @@ export default function ShoppingListDetailScreen() {
         </Fab>
         {isInShopping && (
           <FabConfirmShopping
+            haveToSaveSoppingList={
+              checkedItems().length === shoppingList?.items.length
+            }
             onSave={() => saveShoppingList()}
             onDontSave={() => dontSaveShoppingList()}
             onCreatePurchase={(total_cost) => handleCreatePurchase(total_cost)}

@@ -19,6 +19,7 @@ import { set } from "lodash";
 
 interface FabConfirmShoppingProps {
   title?: string;
+  haveToSaveSoppingList?: boolean;
   onSave?: () => void;
   onDontSave?: () => void;
   onCreatePurchase?: (total_cost: number) => void;
@@ -26,6 +27,7 @@ interface FabConfirmShoppingProps {
 
 export function FabConfirmShopping({
   title,
+  haveToSaveSoppingList = false,
   onSave,
   onDontSave,
   onCreatePurchase,
@@ -34,8 +36,7 @@ export function FabConfirmShopping({
 
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
-  
-  
+
   const [purchaseDate, setPurchaseDate] = useState("");
   const [totalCost, setTotalCost] = useState("");
 
@@ -73,6 +74,14 @@ export function FabConfirmShopping({
     }
   };
 
+  const handleOpenDialog = () => {
+    if (haveToSaveSoppingList) {
+      setShowAlertDialog(true);
+    } else {
+      setShowPurchaseDialog(true);
+    }
+  };
+
   return (
     <>
       <Fab
@@ -81,7 +90,7 @@ export function FabConfirmShopping({
         isHovered={false}
         isDisabled={false}
         isPressed={false}
-        onPress={() => setShowAlertDialog(true)}
+        onPress={() => handleOpenDialog()}
       >
         <>
           <FabIcon as={ShoppingBag} />
@@ -146,8 +155,8 @@ export function FabConfirmShopping({
                 placeholder={t("purchase.form.totalCost.placeholder")}
               />
             </Input>
-            <Input
-              variant="outline"              
+            {/* <Input
+              variant="outline"
               size="md"
               isDisabled={false}
               isInvalid={false}
@@ -158,7 +167,7 @@ export function FabConfirmShopping({
                 onChangeText={setPurchaseDate}
                 placeholder={t("purchase.form.store.placeholder")}
               />
-            </Input>
+            </Input> */}
           </AlertDialogBody>
           <AlertDialogFooter className="">
             <Button
