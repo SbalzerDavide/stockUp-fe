@@ -55,6 +55,14 @@ export default function Index() {
         },
       ],
     },
+    {
+      elements: [
+        {
+          title: "Pantries",
+          link: "/(tabs)/more/pantries",
+        },        
+      ],
+    },
   ];
   return (
     <>
