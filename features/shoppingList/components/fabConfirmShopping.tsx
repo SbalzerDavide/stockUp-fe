@@ -56,6 +56,7 @@ export function FabConfirmShopping({
     if (onDontSave) {
       onDontSave();
     }
+    setShowPurchaseDialog(true);
   };
 
   const handleSave = () => {
